@@ -71,8 +71,6 @@ order:
       descriptor:
         code: "LOAN"
         name: "Gold Loan"
-      location_ids:
-        - "L2"  
       price:
         currency: "INR"
         value: "232800"
@@ -210,7 +208,7 @@ order:
           email: "john.doe@example.com"
       state:
         descriptor:
-          code: "DISBURSED"
+          code: "COMPLETED"
   payments:
     - id: "PAYMENT_ID_GOLD_LOAN"
       type: "POST_FULFILLMENT"

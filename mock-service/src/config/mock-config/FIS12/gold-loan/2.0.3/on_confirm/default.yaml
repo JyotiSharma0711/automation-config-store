@@ -67,12 +67,10 @@ order:
               name: "Lsp Address"
             value: "One Indiabulls centre, Tower 1, 18th Floor Jupiter mill compound 841, Senapati Bapat Marg, Elphinstone Road, Mumbai 400013"
   items:
-    - id: "ITEM_ID_GOLD_LOAN_1"
+    - id: "ITEM_ID_GOLD_LOAN_2"
       descriptor:
         code: "LOAN"
         name: "Gold Loan"
-      location_ids:
-        - "L2"  
       price:
         currency: "INR"
         value: "232800"
@@ -97,6 +95,11 @@ order:
                 short_desc: "Fixed Interest type"
               value: "FIXED"
             - descriptor:
+                code: "LTV_RATIO"
+                name: "LTV Ratio"
+                short_desc: "Loan to value ration (75%)"
+              value: "75%"
+            - descriptor:
                 code: "APPLICATION_FEE"
                 name: "Application Fees"
                 short_desc: "Application Fees"
@@ -109,6 +112,7 @@ order:
             - descriptor:
                 code: "INTEREST_RATE_CONVERSION_CHARGE"
                 name: "interest rate conversion charges"
+                short_desc: "Interest rate conversion charges"
               value: "1000 INR"
             - descriptor:
                 code: "DELAY_PENALTY_FEE"
@@ -131,11 +135,6 @@ order:
                 short_desc: "Repayment Frequency by borrower"
               value: "MONTHLY"
             - descriptor:
-                code: "FORECLOSURE_FEE"
-                name: "Foreclosure Penalty"
-                short_desc: "Loan Foreclosure Penalty"
-              value: "0.5%"
-            - descriptor:
                 code: "NUMBER_OF_INSTALLMENTS_OF_REPAYMENT"
                 name: "Number of installments of repayment"
                 short_desc: "Number of installments borrower has to make to payback the loan"
@@ -148,7 +147,7 @@ order:
             - descriptor:
                 code: "COOL_OFF_PERIOD"
                 name: "cool off period"
-                short_desc: "Cooling off/look-up period during which borrower shall not be\tTAGS m jayega charged any penalty"
+                short_desc: "Cooling off/look-up period during which borrower shall not be charged any penalty"
               value: "PT30D"
             - descriptor:
                 code: "INSTALLMENT_AMOUNT"
@@ -165,37 +164,33 @@ order:
     id: "LOAN_LEAD_ID_OR_SIMILAR"
     price:
       currency: "INR"
-      value: "223836"
+      value: "232800"
     breakup:
       - title: "PRINCIPAL"
         price:
-          value: "60920"
+          value: "200000"
           currency: "INR"
       - title: "INTEREST"
         price:
-          value: "12000"
-          currency: "INR"
-      - title: "INSURANCE_CHARGES"
-        price:
-          value: "500"
+          value: "30000"
           currency: "INR"
       - title: "PROCESSING_FEE"
         price:
           value: "1800"
+          currency: "INR"
+      - title: "OTHER_UPFRONT_CHARGES"
+        price:
+          value: "0"
+          currency: "INR"
+      - title: "INSURANCE_CHARGES"
+        price:
+          value: "500"
           currency: "INR"
       - title: "NET_DISBURSED_AMOUNT"
         price:
           value: "197700"
           currency: "INR"
       - title: "OTHER_CHARGES"
-        price:
-          value: "0"
-          currency: "INR"
-      - title: "OUTSTANDING_PRINCIPAL"
-        price:
-          value: "139080"
-          currency: "INR"
-      - title: "OUTSTANDING_INTEREST"
         price:
           value: "0"
           currency: "INR"
@@ -213,16 +208,8 @@ order:
           code: "DISBURSED"
   payments:
     - id: "PAYMENT_ID_GOLD_LOAN"
-      type: "POST_FULFILLMENT"
-      params:
-        amount: "148616"
-        currency: "INR"
-      status: "PAID"
-      time:
-        label: "FORECLOSURE"
-    - id: "PAYMENT_ID_GOLD_LOAN"
       type: "ON_ORDER"
-      status: "PAID"
+      status: "NOT-PAID"
       collected_by: "BPP"
       tags:
         - descriptor:
@@ -253,7 +240,7 @@ order:
               value: "New Delhi"
             - descriptor:
                 code: "STATIC_TERMS"
-              value: "https://bpp.credit.becknprotocol.org/personal-banking/loans/gold-loan"
+              value: "https://bpp.credit.becknprotocol.org/personal-banking/loans/personal-loan"
             - descriptor:
                 code: "SETTLEMENT_AMOUNT"
               value: "1159"
@@ -265,7 +252,7 @@ order:
       params:
         amount: "46360"
         currency: "INR"
-      status: "PAID"
+      status: "NOT-PAID"
       time:
         label: "INSTALLMENT"
         range:
@@ -276,7 +263,7 @@ order:
       params:
         amount: "46360"
         currency: "INR"
-      status: "PAID"
+      status: "NOT-PAID"
       time:
         label: "INSTALLMENT"
         range:
@@ -287,7 +274,7 @@ order:
       params:
         amount: "46360"
         currency: "INR"
-      status: "DEFERRED"
+      status: "NOT-PAID"
       time:
         label: "INSTALLMENT"
         range:
@@ -298,7 +285,7 @@ order:
       params:
         amount: "46360"
         currency: "INR"
-      status: "DEFERRED"
+      status: "NOT-PAID"
       time:
         label: "INSTALLMENT"
         range:
@@ -309,7 +296,7 @@ order:
       params:
         amount: "46360"
         currency: "INR"
-      status: "DEFERRED"
+      status: "NOT-PAID"
       time:
         label: "INSTALLMENT"
         range:
@@ -323,7 +310,7 @@ order:
         percentage: "3%"
     - external_ref:
         mimetype: "text/html"
-        url: "https://icicibank.com/loan/tnc.html"
+        url: "https://bpp.credit.becknprotocol.org/tnc.html"
     - fulfillment_state:
         descriptor:
           code: "DISBURSED"
@@ -343,4 +330,4 @@ order:
         short_desc: "Download your Loan Cancellation document here"
         long_desc: "A Loan Cancellation Document is a formal agreement used to terminate an existing loan, releasing the borrower from repayment obligations and confirming the loan's cancellation."
       mime_type: "application/pdf"
-      url: "https://lender.com/loan/loan-cancellation/O1.pdf"
+      url: "https://lender.com/loan/loan-cancellation/O1.pdf" 

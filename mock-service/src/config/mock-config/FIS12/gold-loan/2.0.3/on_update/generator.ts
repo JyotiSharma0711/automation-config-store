@@ -4,12 +4,10 @@
  * Logic:
  * 1. Update context with current timestamp
  * 2. Update transaction_id and message_id from session data
- * 3. Generate or update quote.id, provider.id, order.id, and item.id with gold_loan_ prefix
+ * 3. Map quote.id, provider.id, order.id, and item.id from session data
  * 4. Handle three payment types: MISSED_EMI_PAYMENT, FORECLOSURE, PRE_PART_PAYMENT
  * 5. Set time ranges based on context timestamp for MISSED_EMI_PAYMENT
  */
-
-import { randomUUID } from 'crypto';
 
 export async function onUpdateDefaultGenerator(existingPayload: any, sessionData: any) {
   // Update context timestamp
@@ -31,64 +29,25 @@ export async function onUpdateDefaultGenerator(existingPayload: any, sessionData
   if (existingPayload.message) {
     const order = existingPayload.message.order || (existingPayload.message.order = {});
 
-    // Carry forward payments (with installment ranges) from on_init saved order
-    if (sessionData.order?.payments?.length) {
-      order.payments = sessionData.order.payments;
-      console.log("Carried forward payments from session (installment ranges preserved)");
-    }
-
-    // Generate or update order.id with gold_loan_ prefix
+    // Map order.id from session data (carry-forward from confirm)
     if (sessionData.order_id) {
       order.id = sessionData.order_id;
-      console.log("Updated order.id from session:", sessionData.order_id);
-    } else if (!order.id || 
-               order.id === "LOAN_LEAD_ID_OR_SIMILAR_ORDER_ID" ||
-               order.id.startsWith("LOAN_LEAD_ID")) {
-      order.id = `gold_loan_${randomUUID()}`;
-      console.log("Generated order.id:", order.id);
     }
 
-    // Generate or update provider.id with gold_loan_ prefix
-    if (order.provider) {
-      if (sessionData.selected_provider?.id) {
+    // Map provider.id from session data (carry-forward from confirm)
+    if (sessionData.selected_provider?.id && order.provider) {
       order.provider.id = sessionData.selected_provider.id;
-        console.log("Updated provider.id from session:", sessionData.selected_provider.id);
-      } else if (!order.provider.id || 
-                 order.provider.id === "PROVIDER_ID" ||
-                 order.provider.id.startsWith("PROVIDER_ID")) {
-        order.provider.id = `gold_loan_${randomUUID()}`;
-        console.log("Generated provider.id:", order.provider.id);
-      }
     }
 
-    // Generate or update item.id with gold_loan_ prefix
+    // Map item.id from session data (carry-forward from confirm)
     const selectedItem = sessionData.item || (Array.isArray(sessionData.items) ? sessionData.items[0] : undefined);
-    if (order.items?.[0]) {
-      if (selectedItem?.id) {
+    if (selectedItem?.id && order.items?.[0]) {
       order.items[0].id = selectedItem.id;
-        console.log("Updated item.id from session:", selectedItem.id);
-      } else if (!order.items[0].id || 
-                 order.items[0].id === "ITEM_ID_GOLD_LOAN_1" ||
-                 order.items[0].id === "ITEM_ID_GOLD_LOAN_2" ||
-                 order.items[0].id.startsWith("ITEM_ID_GOLD_LOAN")) {
-        order.items[0].id = `gold_loan_${randomUUID()}`;
-        console.log("Generated item.id:", order.items[0].id);
-      }
     }
 
-    // Generate or update quote.id with gold_loan_ prefix
-    if (order.quote) {
-      // Try multiple sources: quote_id, order.quote.id from saved order, or generate new
-      const quoteId = sessionData.quote_id || sessionData.order?.quote?.id || sessionData.quote?.id;
-      if (quoteId) {
-        order.quote.id = quoteId;
-        console.log("Updated quote.id from session:", quoteId);
-      } else if (!order.quote.id || 
-                 order.quote.id === "LOAN_LEAD_ID_OR_SIMILAR" ||
-                 order.quote.id.startsWith("LOAN_LEAD_ID")) {
-        order.quote.id = `gold_loan_${randomUUID()}`;
-        console.log("Generated quote.id:", order.quote.id);
-      }
+    // Map quote.id from session data (carry-forward from confirm)
+    if (sessionData.quote_id && order.quote) {
+      order.quote.id = sessionData.quote_id;
     }
   }
 
@@ -99,14 +58,6 @@ export async function onUpdateDefaultGenerator(existingPayload: any, sessionData
     const idx = order.quote.breakup.findIndex((b: any) => (b.title || '').toUpperCase() === title.toUpperCase());
     const row = { title, price: { value, currency } };
     if (idx >= 0) order.quote.breakup[idx] = row; else order.quote.breakup.push(row);
-  }
-
-  // Helper to remove a breakup line
-  function removeBreakup(order: any, title: string) {
-    if (!order.quote || !Array.isArray(order.quote.breakup)) return;
-    order.quote.breakup = order.quote.breakup.filter((b: any) => 
-      (b.title || '').toUpperCase() !== title.toUpperCase()
-    );
   }
 
   // Helper to generate time range based on context timestamp
@@ -177,39 +128,22 @@ export async function onUpdateDefaultGenerator(existingPayload: any, sessionData
     });
   }
 
-  // Branch by update label - detect from flow_id or existing payment label
+  // Branch by update label
   const orderRef = existingPayload.message?.order || {};
-  let label = sessionData.update_label || orderRef?.payments?.[0]?.time?.label;
-  
-  // Detect label from flow_id if not set
-  if (!label && sessionData.flow_id) {
-    if (sessionData.flow_id.includes('Missed_EMI')) {
-      label = 'MISSED_EMI_PAYMENT';
-    } else if (sessionData.flow_id.includes('Foreclosure')) {
-      label = 'FORECLOSURE';
-    } else if (sessionData.flow_id.includes('Part_Payment') || sessionData.flow_id.includes('Pre_Part')) {
-      label = 'PRE_PART_PAYMENT';
-    }
-  }
-  
-  // Default fallback
-  if (!label) label = 'FORECLOSURE';
+  const label = sessionData.update_label
+    || orderRef?.payments?.[0]?.time?.label
+    || sessionData.user_inputs?.foreclosure_amount && 'FORECLOSURE'
+    || sessionData.user_inputs?.missed_emi_amount && 'MISSED_EMI_PAYMENT'
+    || sessionData.user_inputs?.part_payment_amount && 'PRE_PART_PAYMENT'
+    || 'FORECLOSURE';
 
-  // Ensure payments structure exists - load from session first
-  if (sessionData.order?.payments?.length && !orderRef.payments?.length) {
-    orderRef.payments = sessionData.order.payments;
-    console.log("Loaded payments from session data");
-  }
-  
+  // Ensure payments structure exists
   orderRef.payments = orderRef.payments || [{}];
   const firstPayment = orderRef.payments[0];
   firstPayment.time = firstPayment.time || {};
   firstPayment.time.label = label;
 
   if (label === 'MISSED_EMI_PAYMENT') {
-    // Remove FORCLOSUER_CHARGES from quote breakup (should not be present for missed EMI)
-    removeBreakup(orderRef, 'FORCLOSUER_CHARGES');
-    
     // Set payment params for missed EMI (matching on_confirm installment amount)
     firstPayment.params = firstPayment.params || {};
     firstPayment.params.amount = "46360"; // Matches INSTALLMENT_AMOUNT from on_confirm
@@ -228,7 +162,7 @@ export async function onUpdateDefaultGenerator(existingPayload: any, sessionData
     // Set payment URL
     const paymentAmount = firstPayment.params.amount;
     const transactionId = existingPayload.context?.transaction_id || sessionData.transaction_id;
-    firstPayment.url = `${process.env.FORM_SERVICE}/forms/${sessionData.domain}/payment_url_form?session_id=${sessionData.session_id}&flow_id=${sessionData.flow_id}&transaction_id=${transactionId}&direct=true`;
+    firstPayment.url = `${process.env.FORM_SERVICE}/forms/${sessionData.domain}/payment_url_form?session_id=${sessionData.session_id}&flow_id=${sessionData.flow_id}&transaction_id=${transactionId}&amount=${paymentAmount}`;
     console.log("Payment URL for MISSED_EMI_PAYMENT:", firstPayment.url);
   }
 
@@ -259,55 +193,20 @@ export async function onUpdateDefaultGenerator(existingPayload: any, sessionData
   }
   
   if (label === 'PRE_PART_PAYMENT') {
-    // Remove FORCLOSUER_CHARGES from quote breakup (should not be present for pre part payment)
-    removeBreakup(orderRef, 'FORCLOSUER_CHARGES');
-    
     // Add pre payment charge to quote.breakup
     upsertBreakup(orderRef, 'PRE_PAYMENT_CHARGE', '4500');
     
-    // Get first installment amount from user input
-    const firstInstallmentAmount = sessionData.first_installment_amount || sessionData.input?.first_installment_amount;
-    if (!firstInstallmentAmount) {
-      console.warn("PRE_PART_PAYMENT: first_installment_amount not provided in session data, using default calculation");
-    }
-    
-    // Calculate pre part payment amount: Outstanding Principal + Outstanding Interest + Pre Payment Charge + First Installment Amount
-    const outstandingPrincipal = orderRef.quote?.breakup?.find((b: any) => b.title === 'OUTSTANDING_PRINCIPAL')?.price?.value || '119280';
-    const outstandingInterest = orderRef.quote?.breakup?.find((b: any) => b.title === 'OUTSTANDING_INTEREST')?.price?.value || '6000';
-    const prePaymentCharge = '4500';
-    const firstInstallment = firstInstallmentAmount || '46360'; // Default to standard installment if not provided
-    const partPaymentAmount = String(parseInt(outstandingPrincipal) + parseInt(outstandingInterest) + parseInt(prePaymentCharge) + parseInt(firstInstallment));
-    
-    // Set payment params for pre part payment
+    // Set payment params for pre part payment (installment amount + pre payment charge)
     firstPayment.params = firstPayment.params || {};
-    firstPayment.params.amount = partPaymentAmount;
+    firstPayment.params.amount = "50860"; // 46360 (installment) + 4500 (pre payment charge)
     firstPayment.params.currency = "INR";
     
     // Remove time range for pre part payment
     if (firstPayment.time.range) delete firstPayment.time.range;
     
     // Set payment URL
-    const paymentAmount = partPaymentAmount;
-    const transactionId = existingPayload.context?.transaction_id || sessionData.transaction_id;
-    firstPayment.url = `${process.env.FORM_SERVICE}/forms/${sessionData.domain}/payment_url_form?session_id=${sessionData.session_id}&flow_id=${sessionData.flow_id}&transaction_id=${transactionId}&direct=true`;
-    console.log("Payment URL for PRE_PART_PAYMENT:", firstPayment.url);
-    console.log(`PRE_PART_PAYMENT amount: ${partPaymentAmount} (includes first installment: ${firstInstallment})`);
-    
-    // Mark the first installment as DEFERRED
-    if (orderRef.payments && Array.isArray(orderRef.payments)) {
-      let foundFirstInstallment = false;
-      orderRef.payments.forEach((payment: any) => {
-        if (payment.type === 'POST_FULFILLMENT' && payment.time?.label === 'INSTALLMENT' && !foundFirstInstallment) {
-          payment.status = 'DEFERRED';
-          foundFirstInstallment = true;
-          console.log(`Marked first installment as DEFERRED (amount: ${firstInstallment})`);
-        }
-      });
-      
-      if (!foundFirstInstallment) {
-        console.warn("PRE_PART_PAYMENT: No installment found to mark as DEFERRED");
-      }
-    }
+    const refId = sessionData.message_id || orderRef.id || 'b5487595-42c3-4e20-bd43-ae21400f60f0';
+    firstPayment.url = `https://pg.icici.com/?amount=50860&ref_id=${encodeURIComponent(refId)}`;
   }
   
   return existingPayload;

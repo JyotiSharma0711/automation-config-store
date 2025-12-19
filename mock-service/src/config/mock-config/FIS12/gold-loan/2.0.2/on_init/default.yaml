@@ -79,7 +79,7 @@ order:
         name: "Gold Loan"
       price:
         currency: "INR"
-        value: "232800"
+        value: "441800"
       tags:
         - descriptor:
             code: "LOAN_INFO"
