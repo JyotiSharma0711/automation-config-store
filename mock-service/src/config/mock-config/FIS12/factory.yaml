@@ -282,3 +282,8 @@ codes:
     action: on_update
     default: FIS12/personal-loan/2.0.2/on_update_personal_loan_fulfillment/default.yaml
     message_id: false
+  - code: 2124
+    action_id: select_bureau_loan
+    action: select
+    default: FIS12/gold-loan/2.0.2/select_bureau_loan/default.yaml
+    message_id: true

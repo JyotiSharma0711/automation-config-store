@@ -43,21 +43,28 @@ export async function onSelect1Generator(existingPayload: any, sessionData: any)
     }
   }
   
-  // Generate or update item.id with gold_loan_ prefix
+  // Generate or update item.id - preserve prefix from session (aa_gold_loan_ or bureau_gold_loan_)
   const selectedItem = sessionData.item || 
                        (Array.isArray(sessionData.items) ? sessionData.items[0] : undefined);
   if (existingPayload.message?.order?.items?.[0]) {
     if (selectedItem?.id) {
-    existingPayload.message.order.items[0].id = selectedItem.id;
+      existingPayload.message.order.items[0].id = selectedItem.id;
       console.log("Updated item.id from session:", selectedItem.id);
     } else if (!existingPayload.message.order.items[0].id || 
                existingPayload.message.order.items[0].id === "ITEM_ID_GOLD_LOAN_1" ||
                existingPayload.message.order.items[0].id === "ITEM_ID_GOLD_LOAN_2" ||
                existingPayload.message.order.items[0].id.startsWith("ITEM_ID_GOLD_LOAN")) {
+      // Default to gold_loan_ prefix if no session data available
       existingPayload.message.order.items[0].id = `gold_loan_${randomUUID()}`;
       console.log("Generated item.id:", existingPayload.message.order.items[0].id);
     }
   }
+  
+  // Determine item type based on ID prefix for conditional logic
+  const currentItemId = existingPayload.message?.order?.items?.[0]?.id || "";
+  const isAAItem = currentItemId.startsWith("aa_gold_loan_");
+  const isBureauItem = currentItemId.startsWith("bureau_gold_loan_");
+  console.log("Item type detection - isAAItem:", isAAItem, "isBureauItem:", isBureauItem, "itemId:", currentItemId);
   
   // Update location_ids if available from session data
   const selectedLocationId = sessionData.selected_location_id;
@@ -67,13 +74,21 @@ export async function onSelect1Generator(existingPayload: any, sessionData: any)
   }
 
   // ========== FINVU AA CONSENT INTEGRATION ==========
+  // Only call Finvu AA service for AA items (items with aa_gold_loan_ prefix)
   
   console.log("--- Finvu AA Integration Start ---");
+  
+  // Check if this is an AA item before proceeding with consent generation
+  if (!isAAItem) {
+    console.log("⚠️ Skipping Finvu AA integration - Item is not an AA loan (Bureau loan or other type)");
+    console.log("Item ID:", currentItemId, "does not start with 'aa_gold_loan_'");
+  }
   
   // Extract customer ID from session data
   const contactNumber = sessionData.form_data?.consumer_information_form?.contactNumber;
   
-  if (contactNumber) {
+  // Only proceed with AA consent if it's an AA item
+  if (contactNumber && isAAItem) {
     const custId = `${contactNumber}@finvu`;
     console.log("Customer ID for consent:", custId);
     
@@ -206,14 +221,13 @@ export async function onSelect1Generator(existingPayload: any, sessionData: any)
       // Fail-safe: Continue without consent handler (or you can throw error to stop flow)
       console.warn("⚠️ Continuing without consent handler due to error");
     }
-  } else {
-    console.warn("⚠️ No contact number found in session data - skipping Finvu AA integration");
-    console.log("Available form data:", sessionData.form_data);
+  } else if (!isAAItem) {
+    console.log("✅ Skipping Finvu AA integration - Item is Bureau loan type, AA consent not required");
   }
   
   console.log("--- Finvu AA Integration End ---");
 
-
+  console.log("existingPayload on_select_1", existingPayload);
 
   // ========== FORM URL UPDATE ==========
   
@@ -225,6 +239,7 @@ export async function onSelect1Generator(existingPayload: any, sessionData: any)
     console.log("Updated form URL for kyc_verification_status:", formUrl);
   }
   
+  console.log("existingPayload on_select_1", existingPayload);
   console.log("=== On Select1 Generator End ===");
   return existingPayload;
 }

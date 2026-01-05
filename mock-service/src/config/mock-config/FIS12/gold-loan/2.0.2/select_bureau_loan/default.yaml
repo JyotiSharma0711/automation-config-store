@@ -1,0 +1,12 @@
+order:
+  provider:
+    id: "PROVIDER_ID"
+  items:
+    - id: "ITEM_ID_GOLD_LOAN_1"
+      xinput:
+        form:
+          id: "F01"
+        form_response:
+          status: "SUCCESS"
+          submission_id: "F01_SUBMISSION_ID"
+

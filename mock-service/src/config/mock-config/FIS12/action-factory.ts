@@ -1,8 +1,10 @@
+// Gold Loan imports
 import { MockSearchClass } from "./gold-loan/2.0.2/search/class";
 import { MockOnSearchClass } from "./gold-loan/2.0.2/on_search/class";
 import { MockSelectAdjustLoanAmountClass} from "./gold-loan/2.0.2/select_adjust_loan_amount/class";
 import { MockSelect1Class } from "./gold-loan/2.0.2/select_1/class";
 import { MockSelect2Class } from "./gold-loan/2.0.2/select_2/class";
+import { MockSelectBureauLoanClass } from "./gold-loan/2.0.2/select_bureau_loan/class";
 import { MockOnSelectAdjustLoanAmountClass } from "./gold-loan/2.0.2/on_select_adjust_loan_amount/class";
 import { MockOnSelect1Class } from "./gold-loan/2.0.2/on_select_1/class";
 import { MockOnSelect2Class } from "./gold-loan/2.0.2/on_select_2/class";
@@ -85,6 +87,7 @@ const registry = {
 	on_select_1: MockOnSelect1Class,
 	on_select_2: MockOnSelect2Class,
 	on_select_gold_3: MockOnSelect3Class,
+	select_bureau_loan: MockSelectBureauLoanClass,
 	select_adjust_loan_amount: MockSelectAdjustLoanAmountClass,
 	on_select_adjust_loan_amount: MockOnSelectAdjustLoanAmountClass,
 	// init / on_init

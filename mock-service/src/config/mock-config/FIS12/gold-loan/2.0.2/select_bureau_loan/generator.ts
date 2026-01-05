@@ -1,5 +1,4 @@
-
-export async function select1Generator(existingPayload: any, sessionData: any) {
+export async function selectBureauLoanGenerator(existingPayload: any, sessionData: any) {
   if (existingPayload.context) existingPayload.context.timestamp = new Date().toISOString();
   console.log("sessionData-->",sessionData.session_id)
   // const data = await RedisService.getKey(sessionData.session_id)
@@ -14,28 +13,29 @@ export async function select1Generator(existingPayload: any, sessionData: any) {
   // Check if incoming payload has a specific item ID (from select request)
   const incomingItemId = existingPayload.message?.order?.items?.[0]?.id;
   console.log("incomingItemId-->",incomingItemId)
-  // Prioritize selecting item with AA prefix (aa_gold_loan_)
+  
+  // Prioritize selecting item with Bureau loan prefix (bureau_gold_loan_)
   let selectedItem = sessionData.item;
 
   console.log("selectedItem-->",sessionData.items)
   
-  // If we have multiple items, look for the AA item first
+  // If we have multiple items, look for the Bureau loan item first
   if (Array.isArray(sessionData.items) && sessionData.items.length > 0) {
-    // If incoming payload has an item ID, check if it's an AA item
-    if (incomingItemId && incomingItemId.startsWith("aa_gold_loan_")) {
-      // Find the matching AA item from session data
+    // If incoming payload has an item ID, check if it's a Bureau loan item
+    if (incomingItemId && incomingItemId.startsWith("bureau_gold_loan_")) {
+      // Find the matching Bureau loan item from session data
       selectedItem = sessionData.items.find((item: any) => item?.id === incomingItemId) || 
-                     sessionData.items.find((item: any) => item?.id?.startsWith("aa_gold_loan_"));
-      console.log("✅ Incoming request has AA item ID, using:", selectedItem?.id || incomingItemId);
+                     sessionData.items.find((item: any) => item?.id?.startsWith("bureau_gold_loan_"));
+      console.log("✅ Incoming request has Bureau loan item ID, using:", selectedItem?.id || incomingItemId);
     } else {
-      // First, try to find item with aa_gold_loan_ prefix (prioritize AA items)
-      const aaItem = sessionData.items.find((item: any) => 
-        item?.id && item.id.startsWith("aa_gold_loan_")
+      // First, try to find item with bureau_gold_loan_ prefix (prioritize Bureau loan items)
+      const bureauItem = sessionData.items.find((item: any) => 
+        item?.id && item.id.startsWith("bureau_gold_loan_")
       );
       
-      if (aaItem) {
-        selectedItem = aaItem;
-        console.log("✅ Selected AA item (aa_gold_loan_):", aaItem.id);
+      if (bureauItem) {
+        selectedItem = bureauItem;
+        console.log("✅ Selected Bureau loan item (bureau_gold_loan_):", bureauItem.id);
       } else {
         // If incoming payload has a specific item ID, use that
         if (incomingItemId) {
@@ -43,9 +43,9 @@ export async function select1Generator(existingPayload: any, sessionData: any) {
                          sessionData.items[0];
           console.log("⚠️ Using item from incoming request:", selectedItem?.id || incomingItemId);
         } else {
-          // Fallback to first item if no AA item found
+          // Fallback to first item if no Bureau loan item found
           selectedItem = selectedItem || sessionData.items[0];
-          console.log("⚠️ No AA item found, using:", selectedItem?.id || "first available item");
+          console.log("⚠️ No Bureau loan item found, using:", selectedItem?.id || "first available item");
         }
       }
     }
