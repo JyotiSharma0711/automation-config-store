@@ -287,3 +287,25 @@ codes:
     action: select
     default: FIS12/gold-loan/2.0.2/select_bureau_loan/default.yaml
     message_id: true
+
+    # __________________IGM 1.0.0 METRO___________________________
+  - code: 340
+    action_id: issue_open_metro_100
+    action: issue
+    default: FIS12/gold-loan/2.0.2/issue/issue_100/issue_open/default.yaml
+    message_id: true
+  - code: 341
+    action_id: on_issue_processing_metro_100
+    action: on_issue
+    default: FIS12/gold-loan/2.0.2/on_issue/on_issue_100/on_issue_processing/default.yaml
+    message_id: false  
+  - code: 342
+    action_id: on_issue_resolved_metro_100
+    action: on_issue_status
+    default: FIS12/gold-loan/2.0.2/on_issue/on_issue_100/on_issue_resolved/default.yaml
+    message_id: true  
+  - code: 343
+    action_id: issue_close_metro_100
+    action: issue
+    default: FIS12/gold-loan/2.0.2/issue/issue_100/issue_close/default.yaml
+    message_id: true
