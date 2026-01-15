@@ -32,19 +32,19 @@ export const issueStatusGenerator_100 = async (
       };
       existingPayload.message.issue.order_details = {
         id: order ?? "4597f703-e84f-431e-a96a-d147cfa142f9",
-        state: "Completed",
+        // state: "Completed",
         items: [
           {
             id: item ?? "18275-ONDC-1-9",
-            quantity: 1,
+            // quantity: 1,
           },
         ],
-        fulfillments: [
-          {
-            id: fulfillment ?? "Fulfillment1",
-            state: "Order-delivered",
-          },
-        ],
+        // fulfillments: [
+        //   {
+        //     id: fulfillment ?? "Fulfillment1",
+        //     state: "Order-delivered",
+        //   },
+        // ],
         provider_id: provider?.id ?? "P1",
       };
       existingPayload.message.issue.description = {

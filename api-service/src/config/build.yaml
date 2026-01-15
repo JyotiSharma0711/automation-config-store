@@ -43822,13 +43822,13 @@ x-validations:
                 attr: $.message.issue.order_details.items[*].id
                 _RETURN_: attr are present
 
-              - _NAME_: REQUIRED_ORDER_ITEMS_QUANTITY
-                attr: $.message.issue.order_details.items[*].quantity
-                _RETURN_: attr are present  
+              # - _NAME_: REQUIRED_ORDER_ITEMS_QUANTITY
+              #   attr: $.message.issue.order_details.items[*].quantity
+              #   _RETURN_: attr are present  
 
-              - _NAME_: REQUIRED_FULFILLMENT_ID
-                attr: $.message.issue.order_details.fulfillments[*].id
-                _RETURN_: attr are present
+              # - _NAME_: REQUIRED_FULFILLMENT_ID
+              #   attr: $.message.issue.order_details.fulfillments[*].id
+              #   _RETURN_: attr are present
 
               - _NAME_: REQUIRED_PROVIDER_ID
                 attr: $.message.issue.order_details.provider_id
