@@ -67,9 +67,10 @@ import { MockConsumerInformationFormPl202Class } from "./personal-loan/2.0.2/for
 import { MockEKycVerificationStatusPl202Class } from "./personal-loan/2.0.2/form_2/kyc_verification_status";
 import { MockPaymentUrlFormStatusClass } from "./personal-loan/2.0.2/form_3/payment_url_form";
 import { MockVerificationPlStatusClass } from "./personal-loan/2.0.2/form_4/verification_status";
-import { MockIssueOpenMetro_100_Class } from "./gold-loan/2.0.2/issue/issue_100/issue_open/class";
-import { MockIssueCloseMetro_100_Class } from "./gold-loan/2.0.2/issue/issue_100/issue_close/class";
-import { MockOnIssueResolvedMetro_100_Class } from "./gold-loan/2.0.2/on_issue/on_issue_100/on_issue_resolved/class";
+import { MockIssueOpenGoldLoan_100_Class } from "./gold-loan/2.0.2/issue/issue_100/issue_open/class";
+import { MockIssueCloseGoldLoan_100_Class } from "./gold-loan/2.0.2/issue/issue_100/issue_close/class";
+import { MockOnIssueResolvedGoldLoan_100_Class } from "./gold-loan/2.0.2/on_issue/on_issue_100/on_issue_resolved/class";
+import { MockOnIssueProcessingGoldLoan_100_Class } from "./gold-loan/2.0.2/on_issue/on_issue_100/on_issue_processing/class";
 
 type Ctor<T> = new () => T;
 
@@ -157,11 +158,11 @@ const registry = {
 	update_personal_loan_fulfillment: MockUpdatePersonalLoanFulfillmentClass,
 	on_update_personal_loan_fulfillment: MockOnUpdatePersonalLoanFulfillmentClass,
 
-	// _____________IGM_1.0.0 METRO______________
-	issue_open_metro_100:  MockIssueOpenMetro_100_Class,
-	issue_close_metro_100: MockIssueCloseMetro_100_Class,
-	on_issue_processing_metro_100: MockIssueOpenMetro_100_Class,
-	on_issue_resolved_metro_100: MockOnIssueResolvedMetro_100_Class
+	// _____________IGM_1.0.0 for Gold Loan (2.0.2)______________
+	issue_open_GD_100:  MockIssueOpenGoldLoan_100_Class,
+	issue_close_GD_100: MockIssueCloseGoldLoan_100_Class,
+	on_issue_processing_GD_100: MockOnIssueProcessingGoldLoan_100_Class,
+	on_issue_resolved_GD_100: MockOnIssueResolvedGoldLoan_100_Class
 
 } as const satisfies Record<string, Ctor<MockAction>>;
 

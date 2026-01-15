@@ -9,7 +9,7 @@ import {
 import { SessionData } from "../../../../../session-types";
 import { onIssueStatusGenerator_100 } from "../generator";
 
-export class MockOnIssueProcessingMetro_100_Class extends MockAction {
+export class MockOnIssueProcessingGoldLoan_100_Class extends MockAction {
   get saveData(): saveType {
     return yaml.load(
       readFileSync(path.resolve(__dirname, "../../save-data.yaml"), "utf8")
