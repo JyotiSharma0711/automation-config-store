@@ -193,7 +193,7 @@ order:
           headings:
             - "JOURNEY_OFFLINE"
         form:
-          id: "FO3"
+          id: "F03"
           mime_type: "application/html"
           url: "https://https://bpp.credit.becknprotocol.org/loans-details/xinput?formid=FO3"
           resubmit: false

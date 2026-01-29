@@ -1,8 +1,10 @@
+// Gold Loan imports
 import { MockSearchClass } from "./gold-loan/2.0.2/search/class";
 import { MockOnSearchClass } from "./gold-loan/2.0.2/on_search/class";
 import { MockSelectAdjustLoanAmountClass} from "./gold-loan/2.0.2/select_adjust_loan_amount/class";
 import { MockSelect1Class } from "./gold-loan/2.0.2/select_1/class";
 import { MockSelect2Class } from "./gold-loan/2.0.2/select_2/class";
+import { MockSelectBureauLoanClass } from "./gold-loan/2.0.2/select_bureau_loan/class";
 import { MockOnSelectAdjustLoanAmountClass } from "./gold-loan/2.0.2/on_select_adjust_loan_amount/class";
 import { MockOnSelect1Class } from "./gold-loan/2.0.2/on_select_1/class";
 import { MockOnSelect2Class } from "./gold-loan/2.0.2/on_select_2/class";
@@ -65,6 +67,10 @@ import { MockConsumerInformationFormPl202Class } from "./personal-loan/2.0.2/for
 import { MockEKycVerificationStatusPl202Class } from "./personal-loan/2.0.2/form_2/kyc_verification_status";
 import { MockPaymentUrlFormStatusClass } from "./personal-loan/2.0.2/form_3/payment_url_form";
 import { MockVerificationPlStatusClass } from "./personal-loan/2.0.2/form_4/verification_status";
+import { MockIssueOpenGoldLoan_100_Class } from "./gold-loan/2.0.2/issue/issue_100/issue_open/class";
+import { MockIssueCloseGoldLoan_100_Class } from "./gold-loan/2.0.2/issue/issue_100/issue_close/class";
+import { MockOnIssueResolvedGoldLoan_100_Class } from "./gold-loan/2.0.2/on_issue/on_issue_100/on_issue_resolved/class";
+import { MockOnIssueProcessingGoldLoan_100_Class } from "./gold-loan/2.0.2/on_issue/on_issue_100/on_issue_processing/class";
 
 type Ctor<T> = new () => T;
 
@@ -85,6 +91,7 @@ const registry = {
 	on_select_1: MockOnSelect1Class,
 	on_select_2: MockOnSelect2Class,
 	on_select_gold_3: MockOnSelect3Class,
+	select_bureau_loan: MockSelectBureauLoanClass,
 	select_adjust_loan_amount: MockSelectAdjustLoanAmountClass,
 	on_select_adjust_loan_amount: MockOnSelectAdjustLoanAmountClass,
 	// init / on_init
@@ -150,6 +157,12 @@ const registry = {
 	on_status_1_personal_loan: MockOnStatus1PersonalLoanClass,
 	update_personal_loan_fulfillment: MockUpdatePersonalLoanFulfillmentClass,
 	on_update_personal_loan_fulfillment: MockOnUpdatePersonalLoanFulfillmentClass,
+
+	// _____________IGM_1.0.0 for Gold Loan (2.0.2)______________
+	issue_open_GD_100:  MockIssueOpenGoldLoan_100_Class,
+	issue_close_GD_100: MockIssueCloseGoldLoan_100_Class,
+	on_issue_processing_GD_100: MockOnIssueProcessingGoldLoan_100_Class,
+	on_issue_resolved_GD_100: MockOnIssueResolvedGoldLoan_100_Class
 
 } as const satisfies Record<string, Ctor<MockAction>>;
 

@@ -101,6 +101,14 @@ export async function onUpdateDefaultGenerator(existingPayload: any, sessionData
     if (idx >= 0) order.quote.breakup[idx] = row; else order.quote.breakup.push(row);
   }
 
+  // Helper to remove a breakup line
+  function removeBreakup(order: any, title: string) {
+    if (!order.quote || !Array.isArray(order.quote.breakup)) return;
+    order.quote.breakup = order.quote.breakup.filter((b: any) => 
+      (b.title || '').toUpperCase() !== title.toUpperCase()
+    );
+  }
+
   // Helper to generate time range based on context timestamp
   function generateTimeRangeFromContext(contextTimestamp: string) {
     const contextDate = new Date(contextTimestamp);
@@ -199,6 +207,9 @@ export async function onUpdateDefaultGenerator(existingPayload: any, sessionData
   firstPayment.time.label = label;
 
   if (label === 'MISSED_EMI_PAYMENT') {
+    // Remove FORCLOSUER_CHARGES from quote breakup (should not be present for missed EMI)
+    removeBreakup(orderRef, 'FORCLOSUER_CHARGES');
+    
     // Set payment params for missed EMI (matching on_confirm installment amount)
     firstPayment.params = firstPayment.params || {};
     firstPayment.params.amount = "46360"; // Matches INSTALLMENT_AMOUNT from on_confirm
@@ -248,6 +259,9 @@ export async function onUpdateDefaultGenerator(existingPayload: any, sessionData
   }
   
   if (label === 'PRE_PART_PAYMENT') {
+    // Remove FORCLOSUER_CHARGES from quote breakup (should not be present for pre part payment)
+    removeBreakup(orderRef, 'FORCLOSUER_CHARGES');
+    
     // Add pre payment charge to quote.breakup
     upsertBreakup(orderRef, 'PRE_PAYMENT_CHARGE', '4500');
     
@@ -275,7 +289,7 @@ export async function onUpdateDefaultGenerator(existingPayload: any, sessionData
     // Set payment URL
     const paymentAmount = partPaymentAmount;
     const transactionId = existingPayload.context?.transaction_id || sessionData.transaction_id;
-    firstPayment.url = `${process.env.FORM_SERVICE}/forms/${sessionData.domain}/payment_url_form?session_id=${sessionData.session_id}&flow_id=${sessionData.flow_id}&transaction_id=${transactionId}&amount=${paymentAmount}`;
+    firstPayment.url = `${process.env.FORM_SERVICE}/forms/${sessionData.domain}/payment_url_form?session_id=${sessionData.session_id}&flow_id=${sessionData.flow_id}&transaction_id=${transactionId}&direct=true`;
     console.log("Payment URL for PRE_PART_PAYMENT:", firstPayment.url);
     console.log(`PRE_PART_PAYMENT amount: ${partPaymentAmount} (includes first installment: ${firstInstallment})`);
     

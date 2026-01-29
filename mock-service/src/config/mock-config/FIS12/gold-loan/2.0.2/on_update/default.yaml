@@ -164,7 +164,7 @@ order:
     breakup:
       - title: PRINCIPAL
         price:
-          value: "400000"
+          value: "200000"
           currency: INR
       - title: INSURANCE_CHARGES
         price:
@@ -172,7 +172,7 @@ order:
           currency: INR
       - title: INTEREST
         price:
-          value: "12000"
+          value: "30000"
           currency: INR
       - title: PROCESSING_FEE
         price:

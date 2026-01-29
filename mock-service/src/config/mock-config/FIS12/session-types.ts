@@ -70,6 +70,15 @@ export interface SessionData {
 	manadate_details_form?: string;
 	loan_amount_adjustment_form?: string;
 	personal_loan_information_form?: string;
+	latest_issue_payload: any
+	igm_action: any
+	issue_action: any
+	issue_level: any
+	issue_resolution: any
+	issue_id: any
+	issue_actions: any
+	issue_created_at: any
+	on_issue_actions: any
 }
 
 export type BecknContext = {
@@ -115,4 +124,6 @@ export interface Input {
 	missed_emi_date?: string;
 	part_payment_amount?: number;
 	payment_date?: string;
+	resolution_accept: any
+    rating: string
 }

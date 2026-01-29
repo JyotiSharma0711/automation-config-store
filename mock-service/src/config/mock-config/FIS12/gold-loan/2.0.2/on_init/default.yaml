@@ -79,7 +79,7 @@ order:
         name: "Gold Loan"
       price:
         currency: "INR"
-        value: "232800"
+        value: "441800"
       tags:
         - descriptor:
             code: "LOAN_INFO"
@@ -170,16 +170,16 @@ order:
     id: LOAN_LEAD_ID_OR_SIMILAR
     price:
       currency: INR
-      value: "442300"
+      value: "232800"
     breakup:
       - title: PRINCIPAL
         price:
-          value: "400000"
+          value: "200000"
           currency: INR
 
       - title: INTEREST
         price:
-          value: "40000"
+          value: "30000"
           currency: INR
 
       - title: PROCESSING_FEE
@@ -199,7 +199,7 @@ order:
 
       - title: NET_DISBURSED_AMOUNT
         price:
-          value: "397700"
+          value: "197700"
           currency: INR
 
       - title: OTHER_CHARGES

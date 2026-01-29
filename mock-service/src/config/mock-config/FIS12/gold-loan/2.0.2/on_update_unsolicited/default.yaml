@@ -210,7 +210,7 @@ order:
           email: "john.doe@example.com"
       state:
         descriptor:
-          code: "COMPLETED"
+          code: "DISBURSED"
   payments:
     - id: "PAYMENT_ID_GOLD_LOAN"
       type: "POST_FULFILLMENT"

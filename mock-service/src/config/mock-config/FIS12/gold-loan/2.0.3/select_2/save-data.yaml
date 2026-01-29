@@ -1,0 +1,7 @@
+save-data:
+  transaction_id: "$.context.transaction_id"
+  message_id: "$.context.message_id"
+  selected_location_id: "$.message.order.items[0].location_ids[0]"
+  selected_items: "$.message.order.items[*]"
+  last_select_status: "$.message.order.items[0].xinput.form_response.status"
+

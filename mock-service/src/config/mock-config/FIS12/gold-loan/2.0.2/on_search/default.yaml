@@ -11,7 +11,7 @@ catalog:
         short_desc: "ICICI Bank Ltd"
         long_desc: "ICICI Bank Ltd, India."
       categories:
-        - id: "100001"
+        - id: "101123"
           descriptor:
             code: "GOLD_LOAN"
             name: "Gold Loan"       

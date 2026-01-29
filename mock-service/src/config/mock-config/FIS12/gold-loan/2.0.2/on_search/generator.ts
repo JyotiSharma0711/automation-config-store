@@ -25,10 +25,26 @@ export async function onSearchDefaultGenerator(existingPayload: any, sessionData
     }
     
     // Generate item IDs if they are placeholders
+    // Different prefixes based on category: AA_LOAN (101125) vs BUREAU_LOAN (101124)
     if (provider.items && Array.isArray(provider.items)) {
       provider.items = provider.items.map((item: any) => {
         if (!item.id || item.id === "ITEM_ID_GOLD_LOAN_1" || item.id === "ITEM_ID_GOLD_LOAN_2" || item.id.startsWith("ITEM_ID_GOLD_LOAN")) {
-          item.id = `gold_loan_${randomUUID()}`;
+          // Determine prefix based on category_ids
+          const categoryIds = item.category_ids || [];
+          let prefix = "gold_loan_"; // default prefix
+          
+          // Check if item has AA_LOAN category (101125)
+          if (categoryIds.includes("101125")) {
+            prefix = "aa_gold_loan_";
+            console.log("Item has AA_LOAN category - using aa_gold_loan_ prefix");
+          } 
+          // Check if item has BUREAU_LOAN category (101124)
+          else if (categoryIds.includes("101124")) {
+            prefix = "bureau_gold_loan_";
+            console.log("Item has BUREAU_LOAN category - using bureau_gold_loan_ prefix");
+          }
+          
+          item.id = `${prefix}${randomUUID()}`;
           console.log("Generated item.id:", item.id);
         }
         
