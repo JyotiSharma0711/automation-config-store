@@ -6,4 +6,4 @@ save-data:
   selected_provider: "$.message.order.provider"
   item: "$.message.order.items[0]"
   billing: "$.message.order.billing"
-  tags: "$.message.order.tags[*]"
+  tags: "$.message.order.tags[*]" 

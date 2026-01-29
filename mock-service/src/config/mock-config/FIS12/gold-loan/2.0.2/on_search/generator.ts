@@ -17,7 +17,7 @@ export async function onSearchDefaultGenerator(existingPayload: any, sessionData
   // Generate dynamic IDs with gold_loan_ prefix for provider, items, and quotes
   if (existingPayload.message?.catalog?.providers?.[0]) {
     const provider = existingPayload.message.catalog.providers[0];
-
+    
     // Generate ONE form id for consumer_information_form and apply to all items.
     // This ensures the form id returned by on_search is the same one used in select_1 and on_select_1,
     // regardless of which item gets selected.

@@ -101,7 +101,7 @@ export async function onConfirmDefaultGenerator(existingPayload: any, sessionDat
       console.log("Updated quote.id from session:", sessionQuoteId);
     } else if (
       !existingPayload.message.order.quote.id ||
-      existingPayload.message.order.quote.id === "LOAN_LEAD_ID_OR_SIMILAR" ||
+               existingPayload.message.order.quote.id === "LOAN_LEAD_ID_OR_SIMILAR" ||
       existingPayload.message.order.quote.id.startsWith("LOAN_LEAD_ID")
     ) {
       existingPayload.message.order.quote.id = `gold_loan_${randomUUID()}`;

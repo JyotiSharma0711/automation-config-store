@@ -14,6 +14,9 @@ import { MockConfirmClass } from "./gold-loan/2.0.2/confirm/class";
 import { MockOnConfirmClass } from "./gold-loan/2.0.2/on_confirm/class";
 import { MockUpdateClass } from "./gold-loan/2.0.2/update/class";
 import { MockOnUpdateClass } from "./gold-loan/2.0.2/on_update/class";
+import { MockOnUpdateForeclosureClass } from "./gold-loan/2.0.2/on_update_foreclosure/class";
+import { MockOnUpdateMissedEmiClass } from "./gold-loan/2.0.2/on_update_missed_emi/class";
+import { MockOnUpdatePrePartPaymentClass } from "./gold-loan/2.0.2/on_update_pre_part_payment/class";
 import { MockOnUpdateUnsolicitedClass } from "./gold-loan/2.0.2/on_update_unsolicited/class";
 import type { MockAction } from "./classes/mock-action";
 import { MockConsumerInformationFormClass } from "./gold-loan/2.0.2/form/consumer_information_form";
@@ -110,6 +113,9 @@ const registry = {
 	// update / on_update
 	update: MockUpdateClass,
 	on_update: MockOnUpdateClass,
+	on_update_foreclosure: MockOnUpdateForeclosureClass,
+	on_update_missed_emi: MockOnUpdateMissedEmiClass,
+	on_update_pre_part_payment: MockOnUpdatePrePartPaymentClass,
 	on_update_unsolicited: MockOnUpdateUnsolicitedClass,
 	consumer_information_form_pl_202: MockConsumerInformationFormPl202Class,
 	consumer_information_form: MockConsumerInformationFormClass,
