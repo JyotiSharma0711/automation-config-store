@@ -6,3 +6,4 @@ save-data:
   item: "$.message.order.items[0]"
   selected_provider: "$.message.order.provider"
   last_select_status: "$.message.order.items[0].xinput.form_response.status"
+  form_id: "$.message.order.items[0].xinput.form.id"

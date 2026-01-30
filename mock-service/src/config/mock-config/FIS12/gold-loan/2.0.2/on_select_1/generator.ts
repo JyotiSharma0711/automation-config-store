@@ -320,6 +320,16 @@ export async function onSelect1Generator(existingPayload: any, sessionData: any)
   
   // Update form URL for kyc_verification_status (next step form)
   if (existingPayload.message?.order?.items?.[0]?.xinput?.form) {
+    // Carry forward the form.id from on_search/select_1 so UI/protocol has a consistent id
+    const formIdFromSession =
+      sessionData?.form_id ||
+      sessionData?.item?.xinput?.form?.id ||
+      (Array.isArray(sessionData?.items) ? sessionData.items?.[0]?.xinput?.form?.id : undefined);
+    if (formIdFromSession) {
+      existingPayload.message.order.items[0].xinput.form.id = formIdFromSession;
+      console.log("Updated form.id from session:", formIdFromSession);
+    }
+
     const formUrl = `${process.env.FORM_SERVICE || 'http://localhost:3001'}/forms/${sessionData.domain}/kyc_verification_status?session_id=${sessionData.session_id}&flow_id=${sessionData.flow_id}&transaction_id=${existingPayload.context.transaction_id}`;
     
     existingPayload.message.order.items[0].xinput.form.url = formUrl;

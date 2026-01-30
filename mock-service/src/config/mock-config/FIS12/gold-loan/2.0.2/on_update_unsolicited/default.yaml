@@ -148,7 +148,7 @@ order:
             - descriptor:
                 code: "COOL_OFF_PERIOD"
                 name: "cool off period"
-                short_desc: "Cooling off/look-up period during which borrower shall not be\tTAGS m jayega charged any penalty"
+                short_desc: "Cooling off/look-up period during which borrower shall not be charged any penalty"
               value: "PT30D"
             - descriptor:
                 code: "INSTALLMENT_AMOUNT"

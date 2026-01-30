@@ -89,8 +89,13 @@ export async function onSelect3Generator(existingPayload: any, sessionData: any)
     console.log("Updated xinput index to cur: 1, max: 1");
   }
   
-  // Update form URL for Ekyc_details_form (preserve existing structure)
+  // Update form ID and URL for Ekyc_details_form (preserve existing structure)
   if (existingPayload.message?.order?.items?.[0]?.xinput?.form) {
+    // Update form ID from session data (carry-forward from selected item) or generate new one
+    const formId = sessionData.form_id || selectedItem?.xinput?.form?.id || `form_${randomUUID()}`;
+    existingPayload.message.order.items[0].xinput.form.id = formId;
+    console.log("Updated form ID:", formId);
+    
     const url = `${process.env.FORM_SERVICE}/forms/${sessionData.domain}/Ekyc_details_form?session_id=${sessionData.session_id}&flow_id=${sessionData.flow_id}&transaction_id=${existingPayload.context.transaction_id}`;
     console.log("URL for Ekyc_details_form in on_select_3", url);
     existingPayload.message.order.items[0].xinput.form.url = url;

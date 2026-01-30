@@ -18,6 +18,14 @@ export async function onSearchDefaultGenerator(existingPayload: any, sessionData
   if (existingPayload.message?.catalog?.providers?.[0]) {
     const provider = existingPayload.message.catalog.providers[0];
     
+    // Generate ONE form id for consumer_information_form and apply to all items.
+    // This ensures the form id returned by on_search is the same one used in select_1 and on_select_1,
+    // regardless of which item gets selected.
+    const consumerInformationFormId =
+      (typeof sessionData?.form_id === "string" && sessionData.form_id.trim()
+        ? sessionData.form_id
+        : `form_${randomUUID()}`);
+    
     // Generate provider ID if it's a placeholder
     if (!provider.id || provider.id === "PROVIDER_ID" || provider.id.startsWith("PROVIDER_ID")) {
       provider.id = `gold_loan_${randomUUID()}`;
@@ -48,8 +56,11 @@ export async function onSearchDefaultGenerator(existingPayload: any, sessionData
           console.log("Generated item.id:", item.id);
         }
         
-        // Update form URLs for items with session data (preserve existing structure)
+        // Update form ID and generate dynamic form URL for items with session data
         if (item.xinput?.form) {
+          item.xinput.form.id = consumerInformationFormId;
+          console.log("Using consumer_information_form form.id:", item.xinput.form.id);
+          
           // Generate dynamic form URL with session data
           const url = `${process.env.FORM_SERVICE}/forms/${sessionData.domain}/consumer_information_form?session_id=${sessionData.session_id}&flow_id=${sessionData.flow_id}&transaction_id=${existingPayload.context.transaction_id}`;
           console.log("Form URL generated:", url);

@@ -67,23 +67,11 @@ export async function initDefaultGenerator(existingPayload: any, sessionData: an
     }
   }
   
-  // Generate or update quote.id with gold_loan_ prefix
-  if (existingPayload.message?.order?.quote) {
-    if (sessionData.quote_id) {
-      existingPayload.message.order.quote.id = sessionData.quote_id;
-      console.log("Updated quote.id from session:", sessionData.quote_id);
-    } else if (!existingPayload.message.order.quote.id || 
-               existingPayload.message.order.quote.id === "LOAN_LEAD_ID_OR_SIMILAR" ||
-               existingPayload.message.order.quote.id.startsWith("LOAN_LEAD_ID")) {
-      existingPayload.message.order.quote.id = `gold_loan_${randomUUID()}`;
-      console.log("Generated quote.id:", existingPayload.message.order.quote.id);
-    }
-  }
-  
+  console.log("Updated quote.id from session:", sessionData.quote_id);
   // Update form ID from session data (carry-forward from previous flows)
   if (existingPayload.message?.order?.items?.[0]?.xinput?.form) {
-    // Use form ID from session data or default to FO3 (from on_select_2/on_status_unsolicited)
-    const formId = sessionData.form_id || "FO3";
+    // Carry-forward form ID from on_select_2/on_status (verification_status)
+    const formId = sessionData.form_id || `form_${randomUUID()}`;
     existingPayload.message.order.items[0].xinput.form.id = formId;
     console.log("Updated form ID:", formId);
   }

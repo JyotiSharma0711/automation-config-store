@@ -1,0 +1,11 @@
+order:
+  provider:
+    id: PROVIDER_ID
+  items:
+    - id: ITEM_ID_PERSONAL_LOAN_1
+      xinput:
+        form:
+          id: F01
+        form_response:
+          status: SUCCESS
+          submission_id: F01_SUBMISSION_ID

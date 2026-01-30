@@ -7,3 +7,4 @@ save-data:
   item: "$.message.order.items[0]"
   selected_provider: "$.message.order.provider"
   consent_handler: "$.message.order.items[0].tags[0].list[0].value"
+  form_id: "$.message.order.items[0].xinput.form.id"

@@ -9,3 +9,4 @@ save-data:
   selected_provider: "$.message.order.provider"
   quote_id: "$.message.order.quote.id"
   quote: "$.message.order.quote"
+  form_id: "$.message.order.items[0].xinput.form.id"

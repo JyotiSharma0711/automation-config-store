@@ -4,3 +4,4 @@ save-data:
   selected_items: "$.message.order.items[*]"
   last_select_status: "$.message.order.items[0].xinput.form_response.status"
   submission_id : "$.message.order.items[0].xinput.form_response.submission_id"
+  form_id: "$.message.order.items[0].xinput.form.id"

@@ -67,7 +67,7 @@ export async function select1Generator(existingPayload: any, sessionData: any) {
   }
 
   // Ensure xinput.form.id matches the one from on_search (avoid hardcoding F01)
-  const formId = selectedItem?.xinput?.form?.id;
+  const formId = selectedItem?.xinput?.form?.id || sessionData?.form_id;
   if (formId && existingPayload.message?.order?.items?.[0]?.xinput?.form) {
     existingPayload.message.order.items[0].xinput.form.id = formId;
   }

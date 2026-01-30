@@ -43,7 +43,12 @@ export async function onStatusUnsolicitedGenerator(existingPayload: any, session
     console.log("Updated item.id:", selectedItem.id);
   }
   
-  
+  // Update form ID from session data (carry-forward from selected item) or generate new one
+  if (existingPayload.message?.order?.items?.[0]?.xinput?.form) {
+    const formId = sessionData.form_id || selectedItem?.xinput?.form?.id || `form_${randomUUID()}`;
+    existingPayload.message.order.items[0].xinput.form.id = formId;
+    console.log("Updated form ID:", formId);
+  }
 
 
   // Update form response status - on_status_unsolicited uses APPROVED/OFFLINE_PENDING status

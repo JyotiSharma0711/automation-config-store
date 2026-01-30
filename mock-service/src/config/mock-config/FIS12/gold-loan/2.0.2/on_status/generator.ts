@@ -1,3 +1,5 @@
+import { randomUUID } from 'crypto';
+
 export async function onStatusGenerator(existingPayload: any, sessionData: any) {
   if (existingPayload.context) {
     existingPayload.context.timestamp = new Date().toISOString();
@@ -57,10 +59,10 @@ export async function onStatusGenerator(existingPayload: any, sessionData: any) 
       console.log("Updated location_ids:", selectedLocationId);
     }
     
-    // Update form ID from session data (carry-forward from previous flows)
+    // Update form ID from session data (carry-forward from previous flows) or generate new one
     if (item.xinput?.form) {
-      // Use form ID from session data or default to FO3 (from on_select_2/on_status_unsolicited)
-      const formId = sessionData.form_id || "FO3";
+      // Use form ID from session data, from selected item, or generate new one
+      const formId = sessionData.form_id || selectedItem?.xinput?.form?.id || `form_${randomUUID()}`;
       item.xinput.form.id = formId;
       console.log("Updated form ID:", formId);
     }

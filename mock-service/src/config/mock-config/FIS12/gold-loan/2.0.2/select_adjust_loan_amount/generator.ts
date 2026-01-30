@@ -64,6 +64,16 @@ export async function selectAdjustLoanAmountDefaultGenerator(existingPayload: an
     }
   }
   
+  // Carry forward xinput.form.id from on_search (avoid hardcoding F01)
+  const formIdFromSession =
+    selectedItem?.xinput?.form?.id ||
+    sessionData?.form_id ||
+    (Array.isArray(sessionData?.items) ? sessionData.items?.[0]?.xinput?.form?.id : undefined);
+  if (formIdFromSession && existingPayload.message?.order?.items?.[0]?.xinput?.form) {
+    existingPayload.message.order.items[0].xinput.form.id = formIdFromSession;
+    console.log("Updated xinput.form.id from session:", formIdFromSession);
+  }
+
   // Update location_ids if available from session data
   const selectedLocationId = sessionData.selected_location_id;
   if (selectedLocationId && existingPayload.message?.order?.items?.[0]) {

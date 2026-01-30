@@ -7,5 +7,3 @@ save-data:
   item: "$.message.order.items[0]"
   billing: "$.message.order.billing"
   tags: "$.message.order.tags[*]"
-  quote: "$.message.order.quote"
-  quote_id: "$.message.order.quote.id"

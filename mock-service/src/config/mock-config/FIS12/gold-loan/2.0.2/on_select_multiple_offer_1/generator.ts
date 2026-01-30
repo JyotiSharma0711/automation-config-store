@@ -74,10 +74,15 @@ export async function onSelectAdjustLoanAmountDefaultGenerator(existingPayload: 
     }
   }
   
-  // Update xinput form URL for loan_amount_adjustment_form
+  // Update xinput form ID and URL for consumer_information_form
  if (existingPayload.message?.order?.items?.[0]?.xinput?.form ) {
+    // Update form ID from session data (carry-forward from selected item) or generate new one
+    const formId = sessionData.form_id || selectedItem?.xinput?.form?.id || `form_${randomUUID()}`;
+    existingPayload.message.order.items[0].xinput.form.id = formId;
+    console.log("Updated form ID:", formId);
+    
     const url = `${process.env.FORM_SERVICE}/forms/${sessionData.domain}/consumer_information_form?session_id=${sessionData.session_id}&flow_id=${sessionData.flow_id}&transaction_id=${existingPayload.context.transaction_id}`;
-    console.log("✅ URL for loan_amount_adjustment_form in on_select_adjust_loan_amount:", url);
+    console.log("✅ URL for consumer_information_form in on_select_multiple_offer_1:", url);
     existingPayload.message.order.items[0].xinput.form.url = url;
     console.log("✅ Form URL successfully set in payload");
   } else{

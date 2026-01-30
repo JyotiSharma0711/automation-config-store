@@ -14,6 +14,9 @@ import { MockConfirmClass } from "./gold-loan/2.0.2/confirm/class";
 import { MockOnConfirmClass } from "./gold-loan/2.0.2/on_confirm/class";
 import { MockUpdateClass } from "./gold-loan/2.0.2/update/class";
 import { MockOnUpdateClass } from "./gold-loan/2.0.2/on_update/class";
+import { MockOnUpdateForeclosureClass } from "./gold-loan/2.0.2/on_update_foreclosure/class";
+import { MockOnUpdateMissedEmiClass } from "./gold-loan/2.0.2/on_update_missed_emi/class";
+import { MockOnUpdatePrePartPaymentClass } from "./gold-loan/2.0.2/on_update_pre_part_payment/class";
 import { MockOnUpdateUnsolicitedClass } from "./gold-loan/2.0.2/on_update_unsolicited/class";
 import type { MockAction } from "./classes/mock-action";
 import { MockConsumerInformationFormClass } from "./gold-loan/2.0.2/form/consumer_information_form";
@@ -22,7 +25,7 @@ import { MockStatusClass } from "./gold-loan/2.0.2/status/class";
 import { MockOnStatusClass } from "./gold-loan/2.0.2/on_status/class";
 import { MockOnStatusUnsolicitedClass } from "./gold-loan/2.0.2/on_status_unsolicited/class";
 
-// Personal Loan imports
+// Personal Loan 2.0.2 imports
 import { MockSearchPersonalLoanClass } from "./personal-loan/2.0.2/search/class";
 import { MockOnSearchPersonalLoanClass } from "./personal-loan/2.0.2/on_search/class";
 import { MockSelectBureauConsentPersonalLoanClass } from "./personal-loan/2.0.2/select_bureau_consent_personal_loan/class";
@@ -58,6 +61,47 @@ import { MockOnUpdatePersonalLoanFulfillmentClass } from "./personal-loan/2.0.2/
 import { MockLoanAdjustmentFormClass } from "./personal-loan/2.0.2/loan-adjustment-form/loan-amount-adjustment-form";
 import { MockMandateDetailsForm } from "./personal-loan/2.0.2/mandate-details-form/manadate-details-form";
 import { MockPersonalLoanInformationFormClass } from "./personal-loan/2.0.2/personal_loan_information_form/class";
+
+// Personal Loan 2.0.1 imports
+import { MockSearchPersonalLoanClass as MockSearchPersonalLoan201Class } from "./personal-loan/2.0.1/search/class";
+import { MockOnSearchPersonalLoanClass as MockOnSearchPersonalLoan201Class } from "./personal-loan/2.0.1/on_search/class";
+import { MockSelectBureauConsentPersonalLoanClass as MockSelectBureauConsentPersonalLoan201Class } from "./personal-loan/2.0.1/select_bureau_consent_personal_loan/class";
+import { MockOnSelectBureauConsentPersonalLoanClass as MockOnSelectBureauConsentPersonalLoan201Class } from "./personal-loan/2.0.1/on_select_bureau_consent_personal_loan/class";
+import { MockSelect1PersonalLoanClass as MockSelect1PersonalLoan201Class } from "./personal-loan/2.0.1/select_1/class";
+import { MockSelect2PersonalLoanClass as MockSelect2PersonalLoan201Class } from "./personal-loan/2.0.1/select_2/class";
+import { MockOnSelect1PersonalLoanClass as MockOnSelect1PersonalLoan201Class } from "./personal-loan/2.0.1/on_select_1/class";
+import { MockOnSelect2PersonalLoanClass as MockOnSelect2PersonalLoan201Class } from "./personal-loan/2.0.1/on_select_2/class";
+import { MockSelect3PersonalLoanClass as MockSelect3PersonalLoan201Class } from "./personal-loan/2.0.1/select_3/class";
+import { MockOnSelect3PersonalLoanClass as MockOnSelect3PersonalLoan201Class } from "./personal-loan/2.0.1/on_select_3/class";
+import { MockInitOfflineAndOnlinePersonalLoanClass as MockInitOfflineAndOnlinePersonalLoan201Class } from "./personal-loan/2.0.1/init_offline_and_online_personal_loan/class";
+import { MockOnInitOfflineAndOnlinePersonalLoanClass as MockOnInitOfflineAndOnlinePersonalLoan201Class } from "./personal-loan/2.0.1/on_init_offline_and_online_personal_loan/class";
+import { MockInitOfflinePersonalLoanClass as MockInitOfflinePersonalLoan201Class } from "./personal-loan/2.0.1/init_offline/class";
+import { MockOnInitOfflinePersonalLoanClass as MockOnInitOfflinePersonalLoan201Class } from "./personal-loan/2.0.1/on_init_offline_personal_loan/class";
+import { MockInit1PersonalLoanClass as MockInit1PersonalLoan201Class } from "./personal-loan/2.0.1/init_1/class";
+import { MockInit2PersonalLoanClass as MockInit2PersonalLoan201Class } from "./personal-loan/2.0.1/init_2/class";
+import { MockInit3PersonalLoanClass as MockInit3PersonalLoan201Class } from "./personal-loan/2.0.1/init_3/class";
+import { MockOnInit1PersonalLoanClass as MockOnInit1PersonalLoan201Class } from "./personal-loan/2.0.1/on_init_1/class";
+import { MockOnInit2PersonalLoanClass as MockOnInit2PersonalLoan201Class } from "./personal-loan/2.0.1/on_init_2/class";
+import { MockOnInit3PersonalLoanClass as MockOnInit3PersonalLoan201Class } from "./personal-loan/2.0.1/on_init_3/class";
+import { MockConfirmPersonalLoanClass as MockConfirmPersonalLoan201Class } from "./personal-loan/2.0.1/confirm/class";
+import { MockOnConfirmPersonalLoanClass as MockOnConfirmPersonalLoan201Class } from "./personal-loan/2.0.1/on_confirm/class";
+import { MockUpdatePersonalLoanClass as MockUpdatePersonalLoan201Class } from "./personal-loan/2.0.1/update/class";
+import { MockOnUpdatePersonalLoanClass as MockOnUpdatePersonalLoan201Class } from "./personal-loan/2.0.1/on_update/class";
+import { MockOnUpdateUnsolicitedPersonalLoanClass as MockOnUpdateUnsolicitedPersonalLoan201Class } from "./personal-loan/2.0.1/on_update_unsolicited/class";
+import { MockUpdatePersonalLoanFulfillmentClass as MockUpdatePersonalLoanFulfillment201Class } from "./personal-loan/2.0.1/update_personal_loan_fulfillment/class";
+import { MockOnUpdatePersonalLoanFulfillmentClass as MockOnUpdatePersonalLoanFulfillment201Class } from "./personal-loan/2.0.1/on_update_personal_loan_fulfillment/class";
+import { MockStatusPersonalLoanClass as MockStatusPersonalLoan201Class } from "./personal-loan/2.0.1/status/class";
+import { MockOnStatusPersonalLoanClass as MockOnStatusPersonalLoan201Class } from "./personal-loan/2.0.1/on_status/class";
+import { MockStatus1PersonalLoanClass as MockStatus1PersonalLoan201Class } from "./personal-loan/2.0.1/status_1/class";
+import { MockOnStatus1PersonalLoanClass as MockOnStatus1PersonalLoan201Class } from "./personal-loan/2.0.1/on_status_1/class";
+import { MockOnStatusUnsolicitedPersonalLoanClass as MockOnStatusUnsolicitedPersonalLoan201Class } from "./personal-loan/2.0.1/on_status_unsolicited/class";
+import { MockLoanAdjustmentFormClass as MockLoanAdjustmentForm201Class } from "./personal-loan/2.0.1/loan-adjustment-form/loan-amount-adjustment-form";
+import { MockMandateDetailsForm as MockMandateDetails201Form } from "./personal-loan/2.0.1/mandate-details-form/manadate-details-form";
+import { MockPersonalLoanInformationFormClass as MockPersonalLoanInformationForm201Class } from "./personal-loan/2.0.1/personal_loan_information_form/class";
+import { MockConsumerInformationFormPl202Class as MockConsumerInformationForm201Class } from "./personal-loan/2.0.1/form/consumer_information_form";
+import { MockEKycVerificationStatusPl202Class as MockEKycVerificationStatus201Class } from "./personal-loan/2.0.1/form_2/kyc_verification_status";
+import { MockPaymentUrlFormStatusClass as MockPaymentUrlForm201Class } from "./personal-loan/2.0.1/form_3/payment_url_form";
+import { MockVerificationPlStatusClass as MockVerificationStatus201Class } from "./personal-loan/2.0.1/form_4/verification_status";
 import { MockSelect3Class } from "./gold-loan/2.0.2/select_3/class";
 import { MockOnSelect3Class } from "./gold-loan/2.0.2/on_select_3/class";
 import { MockEkycVerificationStatusClass } from "./gold-loan/2.0.2/form_3/ekyc_details_form";
@@ -110,6 +154,9 @@ const registry = {
 	// update / on_update
 	update: MockUpdateClass,
 	on_update: MockOnUpdateClass,
+	on_update_foreclosure: MockOnUpdateForeclosureClass,
+	on_update_missed_emi: MockOnUpdateMissedEmiClass,
+	on_update_pre_part_payment: MockOnUpdatePrePartPaymentClass,
 	on_update_unsolicited: MockOnUpdateUnsolicitedClass,
 	consumer_information_form_pl_202: MockConsumerInformationFormPl202Class,
 	consumer_information_form: MockConsumerInformationFormClass,
@@ -123,8 +170,7 @@ const registry = {
 	manadate_details_form: MockMandateDetailsForm,
 	personal_loan_information_form: MockPersonalLoanInformationFormClass,
 
-	// Personal Loan actions
-
+	// Personal Loan 2.0.2 actions
 	search_personal_loan: MockSearchPersonalLoanClass,
 	on_search_personal_loan: MockOnSearchPersonalLoanClass,
 	select_bureau_consent_personal_loan: MockSelectBureauConsentPersonalLoanClass,
@@ -157,6 +203,47 @@ const registry = {
 	on_status_1_personal_loan: MockOnStatus1PersonalLoanClass,
 	update_personal_loan_fulfillment: MockUpdatePersonalLoanFulfillmentClass,
 	on_update_personal_loan_fulfillment: MockOnUpdatePersonalLoanFulfillmentClass,
+
+	// Personal Loan 2.0.1 actions
+	search_personal_loan_201: MockSearchPersonalLoan201Class,
+	on_search_personal_loan_201: MockOnSearchPersonalLoan201Class,
+	select_bureau_consent_personal_loan_201: MockSelectBureauConsentPersonalLoan201Class,
+	on_select_bureau_consent_personal_loan_201: MockOnSelectBureauConsentPersonalLoan201Class,
+	select_1_personal_loan_201: MockSelect1PersonalLoan201Class,
+	select_2_personal_loan_201: MockSelect2PersonalLoan201Class,
+	on_select_1_personal_loan_201: MockOnSelect1PersonalLoan201Class,
+	on_select_2_personal_loan_201: MockOnSelect2PersonalLoan201Class,
+	select_3_personal_loan_201: MockSelect3PersonalLoan201Class,
+	on_select_3_personal_loan_201: MockOnSelect3PersonalLoan201Class,
+	confirm_personal_loan_201: MockConfirmPersonalLoan201Class,
+	on_confirm_personal_loan_201: MockOnConfirmPersonalLoan201Class,
+	update_personal_loan_201: MockUpdatePersonalLoan201Class,
+	on_update_personal_loan_201: MockOnUpdatePersonalLoan201Class,
+	on_update_unsolicited_personal_loan_201: MockOnUpdateUnsolicitedPersonalLoan201Class,
+	status_personal_loan_201: MockStatusPersonalLoan201Class,
+	on_status_personal_loan_201: MockOnStatusPersonalLoan201Class,
+	on_status_unsolicited_personal_loan_201: MockOnStatusUnsolicitedPersonalLoan201Class,
+	init_offline_personal_loan_201: MockInitOfflinePersonalLoan201Class,
+	on_init_offline_personal_loan_201: MockOnInitOfflinePersonalLoan201Class,
+	init_offline_and_online_personal_loan_201: MockInitOfflineAndOnlinePersonalLoan201Class,
+	on_init_offline_and_online_personal_loan_201: MockOnInitOfflineAndOnlinePersonalLoan201Class,
+	init_1_personal_loan_201: MockInit1PersonalLoan201Class,
+	init_2_personal_loan_201: MockInit2PersonalLoan201Class,
+	init_3_personal_loan_201: MockInit3PersonalLoan201Class,
+	on_init_1_personal_loan_201: MockOnInit1PersonalLoan201Class,
+	on_init_2_personal_loan_201: MockOnInit2PersonalLoan201Class,
+	on_init_3_personal_loan_201: MockOnInit3PersonalLoan201Class,
+	status_1_personal_loan_201: MockStatus1PersonalLoan201Class,
+	on_status_1_personal_loan_201: MockOnStatus1PersonalLoan201Class,
+	update_personal_loan_fulfillment_201: MockUpdatePersonalLoanFulfillment201Class,
+	on_update_personal_loan_fulfillment_201: MockOnUpdatePersonalLoanFulfillment201Class,
+	consumer_information_form_pl_201: MockConsumerInformationForm201Class,
+	Ekyc_details_form_pl_201: MockEKycVerificationStatus201Class,
+	payment_url_form_pl_201: MockPaymentUrlForm201Class,
+	verification_status_pl_201: MockVerificationStatus201Class,
+	loan_amount_adjustment_form_pl_201: MockLoanAdjustmentForm201Class,
+	manadate_details_form_pl_201: MockMandateDetails201Form,
+	personal_loan_information_form_pl_201: MockPersonalLoanInformationForm201Class,
 
 	// _____________IGM_1.0.0 for Gold Loan (2.0.2)______________
 	issue_open_GD_100:  MockIssueOpenGoldLoan_100_Class,

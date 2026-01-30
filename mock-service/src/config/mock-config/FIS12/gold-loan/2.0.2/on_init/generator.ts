@@ -46,15 +46,23 @@ export async function onInitDefaultGenerator(existingPayload: any, sessionData: 
       console.log("Generated item.id:", existingPayload.message.order.items[0].id);
     }
   }
-  
+  console.log("Updated quote.id from session:", sessionData.quote_id);
   // Generate or update quote.id with gold_loan_ prefix
   if (existingPayload.message?.order?.quote) {
-    if (sessionData.quote_id) {
-      existingPayload.message.order.quote.id = sessionData.quote_id;
-      console.log("Updated quote.id from session:", sessionData.quote_id);
-    } else if (!existingPayload.message.order.quote.id || 
+    // Prefer quote_id if present, but also support quote.id being stored as an object in session.
+    const sessionQuoteId =
+      sessionData?.quote_id ||
+      sessionData?.quote?.id ||
+      sessionData?.order?.quote?.id;
+
+    if (sessionQuoteId) {
+      existingPayload.message.order.quote.id = sessionQuoteId;
+      console.log("Updated quote.id from session:", sessionQuoteId);
+    } else if (
+      !existingPayload.message.order.quote.id ||
                existingPayload.message.order.quote.id === "LOAN_LEAD_ID_OR_SIMILAR" ||
-               existingPayload.message.order.quote.id.startsWith("LOAN_LEAD_ID")) {
+      existingPayload.message.order.quote.id.startsWith("LOAN_LEAD_ID")
+    ) {
       existingPayload.message.order.quote.id = `gold_loan_${randomUUID()}`;
       console.log("Generated quote.id:", existingPayload.message.order.quote.id);
     }

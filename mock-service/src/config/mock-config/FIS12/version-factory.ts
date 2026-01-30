@@ -2,6 +2,7 @@ import { SessionData, Input } from "./session-types";
 import { RedisService } from "ondc-automation-cache-lib";
 import { SessionCache } from "../../../types/api-session-cache";
 import { createMockResponseFIS12_200 } from "./gold-loan/2.0.2/generaton-pipeline";
+import { createMockResponseFIS12_201 } from "./personal-loan/2.0.1/generaton-pipeline";
 import { createBuyerUrl, createSellerUrl } from "../../../utils/request-utils";
 
 export async function createMockResponse(
@@ -20,6 +21,8 @@ export async function createMockResponse(
 	let payload: any = {};
 	if (version === "2.0.2") {
 		payload = await createMockResponseFIS12_200(action_id, sessionData);
+	} else if (version === "2.0.1") {
+		payload = await createMockResponseFIS12_201(action_id, sessionData);
 	}
 	if (data.npType === "BAP") {
 		payload.context.bap_uri = data.subscriberUrl;

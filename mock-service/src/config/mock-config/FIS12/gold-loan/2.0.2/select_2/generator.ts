@@ -71,17 +71,27 @@ export async function select2Generator(existingPayload: any, sessionData: any) {
     console.log("Updated location_ids:", selectedLocationId);
   }
   
-  // Ensure form.id is F01 for consumer_information_form (consistent with on_select_1)
+  // Carry-forward form.id from on_select_adjust_loan_amount (loan_amount_adjustment_form)
   if (existingPayload.message?.order?.items?.[0]?.xinput?.form) {
-    existingPayload.message.order.items[0].xinput.form.id = "F01";
-    console.log("Set form.id to F01 for consumer_information_form");
+    const formIdFromSession =
+      sessionData?.form_id ||
+      selectedItem?.xinput?.form?.id ||
+      existingPayload.message.order.items[0].xinput.form.id;
+    if (formIdFromSession) {
+      existingPayload.message.order.items[0].xinput.form.id = formIdFromSession;
+      console.log("Set form.id from session (carry-forward):", formIdFromSession);
+    }
   }
   
   // Update form_response with status and submission_id (preserve existing structure)
-  // Use the actual UUID submission_id from form service (not a static placeholder)
-  const submission_id = sessionData?.form_data?.consumer_information_form?.form_submission_id;
+  // Use the submission_id from the form submitted before select_2
+  // (loan_amount_adjustment_form is returned by on_select_adjust_loan_amount)
+  const submission_id =
+    sessionData?.form_data?.loan_amount_adjustment_form?.form_submission_id ||
+    sessionData?.form_data?.loan_amount_adjustment?.form_submission_id ||
+    sessionData?.submission_id;
 
-  console.log("checking form data for consumer_information_form submission_id:", submission_id);
+  console.log("checking form data for loan_amount_adjustment_form submission_id:", submission_id);
 
   if (existingPayload.message?.order?.items?.[0]?.xinput?.form_response) {
     if (submission_id) {

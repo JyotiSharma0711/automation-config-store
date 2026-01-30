@@ -8,3 +8,4 @@ save-data:
   quote: "$.message.order.quote"
   quote_id: "$.message.order.quote.id"
   loan_amount_adjustment_form: "$..form.url"
+  form_id: "$.message.order.items[0].xinput.form.id"

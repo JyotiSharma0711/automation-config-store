@@ -90,6 +90,21 @@ codes:
     action: on_update
     default: FIS12/gold-loan/2.0.2/on_update/default.yaml
     message_id: false 
+  - code: 2091
+    action_id: on_update_foreclosure
+    action: on_update
+    default: FIS12/gold-loan/2.0.2/on_update_foreclosure/default.yaml
+    message_id: false
+  - code: 2092
+    action_id: on_update_missed_emi
+    action: on_update
+    default: FIS12/gold-loan/2.0.2/on_update_missed_emi/default.yaml
+    message_id: false
+  - code: 2093
+    action_id: on_update_pre_part_payment
+    action: on_update
+    default: FIS12/gold-loan/2.0.2/on_update_pre_part_payment/default.yaml
+    message_id: false
   - code: 210
     action_id: on_update_unsolicited
     action: on_update
@@ -287,6 +302,178 @@ codes:
     action: select
     default: FIS12/gold-loan/2.0.2/select_bureau_loan/default.yaml
     message_id: true
+
+  # Personal Loan 2.0.1 actions
+  - code: 400
+    action_id: search_personal_loan_201
+    action: search
+    default: FIS12/personal-loan/2.0.1/search/default.yaml
+    message_id: true
+  - code: 401
+    action_id: on_search_personal_loan_201
+    action: on_search
+    default: FIS12/personal-loan/2.0.1/on_search/default.yaml
+    message_id: false
+  - code: 402
+    action_id: select_bureau_consent_personal_loan_201
+    action: select
+    default: FIS12/personal-loan/2.0.1/select_bureau_consent_personal_loan/default.yaml
+    message_id: true
+  - code: 403
+    action_id: on_select_bureau_consent_personal_loan_201
+    action: on_select
+    default: FIS12/personal-loan/2.0.1/on_select_bureau_consent_personal_loan/default.yaml
+    message_id: false
+  - code: 4021
+    action_id: select_1_personal_loan_201
+    action: select
+    default: FIS12/personal-loan/2.0.1/select_1/default.yaml
+    message_id: true
+  - code: 4022
+    action_id: select_2_personal_loan_201
+    action: select
+    default: FIS12/personal-loan/2.0.1/select_2/default.yaml
+    message_id: true
+  - code: 4031
+    action_id: on_select_1_personal_loan_201
+    action: on_select
+    default: FIS12/personal-loan/2.0.1/on_select_1/default.yaml
+    message_id: false
+  - code: 4032
+    action_id: on_select_2_personal_loan_201
+    action: on_select
+    default: FIS12/personal-loan/2.0.1/on_select_2/default.yaml
+    message_id: false
+  - code: 404
+    action_id: init_personal_loan_201
+    action: init
+    default: FIS12/personal-loan/2.0.1/init/default.yaml
+    message_id: true
+  - code: 405
+    action_id: on_init_personal_loan_201
+    action: on_init
+    default: FIS12/personal-loan/2.0.1/on_init/default.yaml
+    message_id: false
+  - code: 406
+    action_id: confirm_personal_loan_201
+    action: confirm
+    default: FIS12/personal-loan/2.0.1/confirm/default.yaml
+    message_id: true
+  - code: 407
+    action_id: on_confirm_personal_loan_201
+    action: on_confirm
+    default: FIS12/personal-loan/2.0.1/on_confirm/default.yaml
+    message_id: false
+  - code: 408
+    action_id: update_personal_loan_201
+    action: update
+    default: FIS12/personal-loan/2.0.1/update/default.yaml
+    message_id: true
+  - code: 409
+    action_id: on_update_personal_loan_201
+    action: on_update
+    default: FIS12/personal-loan/2.0.1/on_update/default.yaml
+    message_id: false
+  - code: 410
+    action_id: on_update_unsolicited_personal_loan_201
+    action: on_update
+    default: FIS12/personal-loan/2.0.1/on_update_unsolicited/default.yaml
+    message_id: true
+  - code: 411
+    action_id: status_personal_loan_201
+    action: status
+    default: FIS12/personal-loan/2.0.1/status/default.yaml
+    message_id: true
+  - code: 412
+    action_id: on_status_personal_loan_201
+    action: on_status
+    default: FIS12/personal-loan/2.0.1/on_status/default.yaml
+    message_id: false
+  - code: 413
+    action_id: on_status_unsolicited_personal_loan_201
+    action: on_status
+    default: FIS12/personal-loan/2.0.1/on_status_unsolicited/default.yaml
+    message_id: true
+  - code: 4041
+    action_id: init_1_personal_loan_201
+    action: init
+    default: FIS12/personal-loan/2.0.1/init_1/default.yaml
+    message_id: true
+  - code: 4042
+    action_id: init_2_personal_loan_201
+    action: init
+    default: FIS12/personal-loan/2.0.1/init_2/default.yaml
+    message_id: true
+  - code: 4043
+    action_id: init_3_personal_loan_201
+    action: init
+    default: FIS12/personal-loan/2.0.1/init_3/default.yaml
+    message_id: true
+  - code: 4051
+    action_id: on_init_1_personal_loan_201
+    action: on_init
+    default: FIS12/personal-loan/2.0.1/on_init_1/default.yaml
+    message_id: false
+  - code: 4052
+    action_id: on_init_2_personal_loan_201
+    action: on_init
+    default: FIS12/personal-loan/2.0.1/on_init_2/default.yaml
+    message_id: false
+  - code: 4053
+    action_id: on_init_3_personal_loan_201
+    action: on_init
+    default: FIS12/personal-loan/2.0.1/on_init_3/default.yaml
+    message_id: false
+  - code: 4023
+    action_id: select_3_personal_loan_201
+    action: select
+    default: FIS12/personal-loan/2.0.1/select_3/default.yaml
+    message_id: true
+  - code: 4033
+    action_id: on_select_3_personal_loan_201
+    action: on_select
+    default: FIS12/personal-loan/2.0.1/on_select_3/default.yaml
+    message_id: false
+  - code: 4054
+    action_id: init_offline_personal_loan_201
+    action: init
+    default: FIS12/personal-loan/2.0.1/init_offline/default.yaml
+    message_id: true
+  - code: 4055
+    action_id: on_init_offline_personal_loan_201
+    action: on_init
+    default: FIS12/personal-loan/2.0.1/on_init_offline_personal_loan/default.yaml
+    message_id: false
+  - code: 4056
+    action_id: init_offline_and_online_personal_loan_201
+    action: init
+    default: FIS12/personal-loan/2.0.1/init_offline_and_online_personal_loan/default.yaml
+    message_id: true
+  - code: 4057
+    action_id: on_init_offline_and_online_personal_loan_201
+    action: on_init
+    default: FIS12/personal-loan/2.0.1/on_init_offline_and_online_personal_loan/default.yaml
+    message_id: false
+  - code: 4111
+    action_id: status_1_personal_loan_201
+    action: status
+    default: FIS12/personal-loan/2.0.1/status_1/default.yaml
+    message_id: true
+  - code: 4121
+    action_id: on_status_1_personal_loan_201
+    action: on_status
+    default: FIS12/personal-loan/2.0.1/on_status_1/default.yaml
+    message_id: false
+  - code: 414
+    action_id: update_personal_loan_fulfillment_201
+    action: update
+    default: FIS12/personal-loan/2.0.1/update_personal_loan_fulfillment/default.yaml
+    message_id: true
+  - code: 415
+    action_id: on_update_personal_loan_fulfillment_201
+    action: on_update
+    default: FIS12/personal-loan/2.0.1/on_update_personal_loan_fulfillment/default.yaml
+    message_id: false
 
     # __________________IGM 1.0.0 METRO___________________________
   - code: 340
