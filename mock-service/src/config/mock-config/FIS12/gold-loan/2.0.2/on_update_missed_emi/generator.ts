@@ -49,6 +49,29 @@ export async function onUpdateMissedEmiDefaultGenerator(existingPayload: any, se
 
   // Payments: make sure first payment is MISSED_EMI_PAYMENT with range
   order.payments = Array.isArray(order.payments) ? order.payments : [];
+
+  // CRITICAL: Merge installments from session data BEFORE missed EMI logic processes them
+  // The session should have installments from on_confirm with time ranges
+  if (sessionData?.order?.payments?.length > 0) {
+    const sessionPayments = sessionData.order.payments;
+    const installmentsFromSession = sessionPayments.filter(
+      (p: any) => p.type === 'POST_FULFILLMENT' && p.time?.label === 'INSTALLMENT'
+    );
+
+    if (installmentsFromSession.length > 0) {
+      console.log(`Found ${installmentsFromSession.length} installments from session data for missed EMI`);
+
+      // Remove any existing installments from order.payments (from default.yaml)
+      const nonInstallmentPayments = order.payments.filter(
+        (p: any) => !(p.type === 'POST_FULFILLMENT' && p.time?.label === 'INSTALLMENT')
+      );
+
+      // Start with non-installment payments and add installments from session
+      order.payments = [...nonInstallmentPayments, ...installmentsFromSession];
+      console.log('Merged installments from session data for missed EMI processing');
+    }
+  }
+
   const firstPayment = order.payments[0];
   if (firstPayment) {
     firstPayment.time = firstPayment.time || {};
@@ -71,43 +94,22 @@ export async function onUpdateMissedEmiDefaultGenerator(existingPayload: any, se
       firstPayment.time.range = { start: start.toISOString(), end: end.toISOString() };
     }
 
-    // Installments safety: mark previous PAID and ensure target month exists as DELAYED (dedupe if needed)
-    const targetRange = firstPayment.time.range as { start: string; end: string };
-    const targetStartDate = new Date(targetRange.start);
-
-    const isInstallment = (p: any) =>
+    // Update installment statuses for missed EMI scenario
+    // We have installments from session, mark: first 2 PAID, third DELAYED, rest NOT-PAID
+    const installments = order.payments.filter((p: any) =>
       p?.type === "POST_FULFILLMENT" &&
-      p?.time?.label === "INSTALLMENT" &&
-      p?.time?.range?.start &&
-      p?.time?.range?.end;
+      p?.time?.label === "INSTALLMENT"
+    );
 
-    order.payments.forEach((p: any) => {
-      if (!isInstallment(p)) return;
-      const sd = new Date(p.time.range.start);
-      if (sd < targetStartDate && p.status !== "DELAYED") p.status = "PAID";
-    });
-
-    const matchingIdx: number[] = [];
-    order.payments.forEach((p: any, idx: number) => {
-      if (!isInstallment(p)) return;
-      if (p.time.range.start === targetRange.start && p.time.range.end === targetRange.end) matchingIdx.push(idx);
-    });
-
-    if (matchingIdx.length === 0) {
-      order.payments.push({
-        id: "INSTALLMENT_ID_GOLD_LOAN",
-        type: "POST_FULFILLMENT",
-        params: { amount: "46360", currency: "INR" },
-        status: "DELAYED",
-        time: { label: "INSTALLMENT", range: { start: targetRange.start, end: targetRange.end } },
-      });
-    } else {
-      const keep = matchingIdx[0];
-      order.payments[keep].status = "DELAYED";
-      for (let i = matchingIdx.length - 1; i >= 1; i--) {
-        order.payments.splice(matchingIdx[i], 1);
+    installments.forEach((installment: any, index: number) => {
+      if (index < 2) {
+        installment.status = "PAID"; // First 2 paid
+      } else if (index === 2) {
+        installment.status = "DELAYED"; // Third one is delayed (missed EMI)
+      } else {
+        installment.status = "NOT-PAID"; // Rest are not paid
       }
-    }
+    });
 
     // Payment URL generation (FORM_SERVICE)
     const formService = process.env.FORM_SERVICE;

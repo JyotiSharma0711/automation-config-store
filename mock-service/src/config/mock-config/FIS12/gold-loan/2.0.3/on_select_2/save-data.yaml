@@ -1,8 +1,0 @@
-save-data:
-  transaction_id: "$.context.transaction_id"
-  message_id: "$.context.message_id"
-  verification_status: "$..form.url"
-  Ekyc_details_form: "$..form.url"
-  items: "$.message.order.providers[*].items[*]"
-  provider_id: "$.message.order.providers[0].id"
-  item: "$.message.order.providers[0].items[0]"

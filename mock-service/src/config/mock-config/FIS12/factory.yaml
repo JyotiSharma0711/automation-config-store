@@ -110,6 +110,21 @@ codes:
     action: on_update
     default: FIS12/gold-loan/2.0.2/on_update_unsolicited/default.yaml
     message_id: true
+  - code: 2101
+    action_id: on_update_foreclosure_unsolicited
+    action: on_update
+    default: FIS12/gold-loan/2.0.2/on_update_foreclosure_unsolicited/default.yaml
+    message_id: true
+  - code: 2102
+    action_id: on_update_missed_emi_unsolicited
+    action: on_update
+    default: FIS12/gold-loan/2.0.2/on_update_missed_emi_unsolicited/default.yaml
+    message_id: true
+  - code: 2103
+    action_id: on_update_pre_part_payment_unsolicited
+    action: on_update
+    default: FIS12/gold-loan/2.0.2/on_update_pre_part_payment_unsolicited/default.yaml
+    message_id: true
   - code: 211
     action_id: status
     action: status

@@ -1,7 +1,7 @@
 import { randomUUID } from "crypto";
 
-export async function onUpdateForeclosureDefaultGenerator(existingPayload: any, sessionData: any) {
-  // Standalone FORECLOSURE on_update generator
+export async function onUpdatePrePartPaymentUnsolicitedDefaultGenerator(existingPayload: any, sessionData: any) {
+  // Standalone PRE_PART_PAYMENT on_update generator
   existingPayload.context = existingPayload.context || {};
   existingPayload.context.timestamp = new Date().toISOString();
   if (sessionData?.transaction_id) existingPayload.context.transaction_id = sessionData.transaction_id;
@@ -10,13 +10,23 @@ export async function onUpdateForeclosureDefaultGenerator(existingPayload: any, 
   existingPayload.message = existingPayload.message || {};
   const order = existingPayload.message.order || (existingPayload.message.order = {});
 
+  function generateUUID() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+      const r = Math.random() * 16 | 0;
+      const v = c == 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
+    });
+  }
+  if (existingPayload.context) {
+    existingPayload.context.message_id = generateUUID();
+  }
   // If default.yaml doesn't have payments, try carrying forward from session
   if ((!Array.isArray(order.payments) || order.payments.length === 0) && sessionData?.order?.payments?.length) {
     order.payments = sessionData.order.payments;
   }
 
   // CRITICAL: Merge installments from session data properly
-  // The session should have installments from on_confirm with time ranges
+  // The session should have installments from on_update_pre_part_payment with updated statuses
   if (sessionData?.order?.payments?.length > 0) {
     const sessionPayments = sessionData.order.payments;
     const installmentsFromSession = sessionPayments.filter(
@@ -24,26 +34,36 @@ export async function onUpdateForeclosureDefaultGenerator(existingPayload: any, 
     );
 
     if (installmentsFromSession.length > 0) {
-      console.log(`Found ${installmentsFromSession.length} installments from session data for foreclosure`);
+      console.log(`Found ${installmentsFromSession.length} installments from session data for unsolicited update`);
 
       // Remove any existing installments from order.payments
       order.payments = order.payments.filter(
         (p: any) => !(p.type === 'POST_FULFILLMENT' && p.time?.label === 'INSTALLMENT')
       );
 
-      // Update installment statuses based on foreclosure logic
-      // First 2 installments should be PAID (already paid before foreclosure)
-      // Rest should be NOT-PAID (will be handled by foreclosure payment)
+      // Update installment statuses to reflect pre-part payment deferral scenario
+      // First 2: PAID (already paid before pre-part payment)
+      // Next 2 (indices 2-3): DEFERRED (deferred due to pre-part payment)
+      // Remaining: NOT-PAID (still unpaid)
       const updatedInstallments = installmentsFromSession.map((installment: any, index: number) => {
+        let status = 'NOT-PAID'; // default
+
+        if (index < 2) {
+          status = 'PAID'; // First 2 installments are paid
+        } else if (index >= 2 && index < 4) {
+          status = 'DEFERRED'; // Next 2 installments are deferred due to pre-part payment
+        }
+        // Rest remain NOT-PAID
+
         return {
           ...installment,
-          status: index < 2 ? 'PAID' : 'NOT-PAID'
+          status
         };
       });
 
       // Add updated installments to payments array
       order.payments.push(...updatedInstallments);
-      console.log('Merged installments for foreclosure with updated statuses (2 PAID, rest NOT-PAID)');
+      console.log('Merged installments with DEFERRED status for pre-part payment scenario (2 PAID, 2 DEFERRED, rest NOT-PAID)');
     }
   }
 
@@ -79,27 +99,6 @@ export async function onUpdateForeclosureDefaultGenerator(existingPayload: any, 
     }
   }
 
-  // First payment tweaks
-  order.payments = Array.isArray(order.payments) ? order.payments : [];
-  const firstPayment = order.payments[0];
-  if (firstPayment) {
-    firstPayment.time = firstPayment.time || {};
-    firstPayment.time.label = "FORECLOSURE";
-    if (firstPayment.time.range) delete firstPayment.time.range;
-
-    // Prefer foreclosure amount override from user input
-    firstPayment.params = firstPayment.params || {};
-    const userAmt = sessionData?.user_inputs?.foreclosure_amount;
-    if (typeof userAmt === "number") firstPayment.params.amount = String(userAmt);
-    else if (typeof userAmt === "string" && userAmt.trim()) firstPayment.params.amount = userAmt.trim();
-
-    // Payment URL generation (FORM_SERVICE)
-    const formService = process.env.FORM_SERVICE;
-    const txId = existingPayload?.context?.transaction_id || sessionData?.transaction_id;
-    if (formService && sessionData?.domain && sessionData?.session_id && sessionData?.flow_id && txId) {
-      firstPayment.url = `${formService}/forms/${sessionData.domain}/payment_url_form?session_id=${sessionData.session_id}&flow_id=${sessionData.flow_id}&transaction_id=${txId}&direct=true`;
-    }
-  }
 
   return existingPayload;
 }
