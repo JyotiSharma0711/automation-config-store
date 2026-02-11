@@ -15,6 +15,37 @@ export async function onUpdatePrePartPaymentDefaultGenerator(existingPayload: an
     order.payments = sessionData.order.payments;
   }
 
+  // CRITICAL: Merge installments from session data properly
+  // The session should have installments from on_confirm with time ranges
+  if (sessionData?.order?.payments?.length > 0) {
+    const sessionPayments = sessionData.order.payments;
+    const installmentsFromSession = sessionPayments.filter(
+      (p: any) => p.type === 'POST_FULFILLMENT' && p.time?.label === 'INSTALLMENT'
+    );
+
+    if (installmentsFromSession.length > 0) {
+      console.log(`Found ${installmentsFromSession.length} installments from session data`);
+
+      // Remove any existing installments from order.payments
+      order.payments = order.payments.filter(
+        (p: any) => !(p.type === 'POST_FULFILLMENT' && p.time?.label === 'INSTALLMENT')
+      );
+
+      // Update installment statuses based on pre-part payment logic
+      // First 2 installments should be PAID, rest should be NOT-PAID
+      const updatedInstallments = installmentsFromSession.map((installment: any, index: number) => {
+        return {
+          ...installment,
+          status: index < 2 ? 'PAID' : 'NOT-PAID'
+        };
+      });
+
+      // Add updated installments to payments array
+      order.payments.push(...updatedInstallments);
+      console.log('Merged installments with updated statuses (2 PAID, rest NOT-PAID)');
+    }
+  }
+
   // order.id
   if (sessionData?.order_id) order.id = sessionData.order_id;
   else if (!order.id || order.id === "LOAN_LEAD_ID_OR_SIMILAR_ORDER_ID" || String(order.id).startsWith("LOAN_LEAD_ID")) {

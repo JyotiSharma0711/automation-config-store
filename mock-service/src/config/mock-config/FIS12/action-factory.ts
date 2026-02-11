@@ -18,6 +18,9 @@ import { MockOnUpdateForeclosureClass } from "./gold-loan/2.0.2/on_update_forecl
 import { MockOnUpdateMissedEmiClass } from "./gold-loan/2.0.2/on_update_missed_emi/class";
 import { MockOnUpdatePrePartPaymentClass } from "./gold-loan/2.0.2/on_update_pre_part_payment/class";
 import { MockOnUpdateUnsolicitedClass } from "./gold-loan/2.0.2/on_update_unsolicited/class";
+import { MockOnUpdateForeclosureUnsolicitedClass } from "./gold-loan/2.0.2/on_update_foreclosure_unsolicited/class";
+import { MockOnUpdateMissedEmiUnsolicitedClass } from "./gold-loan/2.0.2/on_update_missed_emi_unsolicited/class";
+import { MockOnUpdatePrePartPaymentUnsolicitedClass } from "./gold-loan/2.0.2/on_update_pre_part_payment_unsolicited/class";
 import type { MockAction } from "./classes/mock-action";
 import { MockConsumerInformationFormClass } from "./gold-loan/2.0.2/form/consumer_information_form";
 import { MockVerificationStatusClass } from "./gold-loan/2.0.2/form_2/verification_status";
@@ -81,7 +84,7 @@ const registry = {
 
 	// Gold Loan actions
 	// search
-    search: MockSearchClass,
+	search: MockSearchClass,
 	// on_search
 	on_search: MockOnSearchClass,
 
@@ -117,6 +120,9 @@ const registry = {
 	on_update_missed_emi: MockOnUpdateMissedEmiClass,
 	on_update_pre_part_payment: MockOnUpdatePrePartPaymentClass,
 	on_update_unsolicited: MockOnUpdateUnsolicitedClass,
+	on_update_foreclosure_unsolicited: MockOnUpdateForeclosureUnsolicitedClass,
+	on_update_missed_emi_unsolicited: MockOnUpdateMissedEmiUnsolicitedClass,
+	on_update_pre_part_payment_unsolicited: MockOnUpdatePrePartPaymentUnsolicitedClass,
 	consumer_information_form_pl_202: MockConsumerInformationFormPl202Class,
 	consumer_information_form: MockConsumerInformationFormClass,
 	consumer_information_form_1: MockConsumerInformationFormClass,
@@ -165,7 +171,7 @@ const registry = {
 	on_update_personal_loan_fulfillment: MockOnUpdatePersonalLoanFulfillmentClass,
 
 	// _____________IGM_1.0.0 for Gold Loan (2.0.2)______________
-	issue_open_GD_100:  MockIssueOpenGoldLoan_100_Class,
+	issue_open_GD_100: MockIssueOpenGoldLoan_100_Class,
 	issue_close_GD_100: MockIssueCloseGoldLoan_100_Class,
 	on_issue_processing_GD_100: MockOnIssueProcessingGoldLoan_100_Class,
 	on_issue_resolved_GD_100: MockOnIssueResolvedGoldLoan_100_Class
