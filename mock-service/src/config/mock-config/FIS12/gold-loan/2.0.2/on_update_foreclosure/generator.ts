@@ -15,25 +15,50 @@ export async function onUpdateForeclosureDefaultGenerator(existingPayload: any, 
     order.payments = sessionData.order.payments;
   }
 
-  // CRITICAL: Merge installments from session data properly
-  // The session should have installments from on_confirm with time ranges
+  // CRITICAL: Merge installments AND ON_ORDER payment from session data
+  // IMPORTANT: Maintain the correct payment order from default.yaml
+  // Expected order: FORECLOSURE payment, ON_ORDER payment, then installments
   if (sessionData?.order?.payments?.length > 0) {
     const sessionPayments = sessionData.order.payments;
+
+    // Extract installments from session
     const installmentsFromSession = sessionPayments.filter(
       (p: any) => p.type === 'POST_FULFILLMENT' && p.time?.label === 'INSTALLMENT'
     );
 
+    // Extract ON_ORDER payment from session (preserve unique ID from on_confirm)
+    const onOrderFromSession = sessionPayments.find(
+      (p: any) => p.type === 'ON_ORDER'
+    );
+
+    // Find the FORECLOSURE payment from default.yaml (first payment)
+    const foreclosurePayment = order.payments.find(
+      (p: any) => p.type === 'POST_FULFILLMENT' && p.time?.label === 'FORECLOSURE'
+    );
+
+    // Rebuild payments array in correct order
+    const rebuiltPayments: any[] = [];
+
+    // 1. Add FORECLOSURE payment (from default.yaml)
+    if (foreclosurePayment) {
+      rebuiltPayments.push(foreclosurePayment);
+    }
+
+    // 2. Add ON_ORDER payment (from session, with updated status)
+    if (onOrderFromSession) {
+      const updatedOnOrder = {
+        ...onOrderFromSession,
+        status: 'PAID'  // ON_ORDER is always PAID by the time we reach update flows
+      };
+      rebuiltPayments.push(updatedOnOrder);
+      console.log('Preserved ON_ORDER payment from session with unique ID and updated status to PAID');
+    }
+
+    // 3. Add installments (from session, with updated statuses)
     if (installmentsFromSession.length > 0) {
       console.log(`Found ${installmentsFromSession.length} installments from session data for foreclosure`);
 
-      // Remove any existing installments from order.payments
-      order.payments = order.payments.filter(
-        (p: any) => !(p.type === 'POST_FULFILLMENT' && p.time?.label === 'INSTALLMENT')
-      );
 
-      // Update installment statuses based on foreclosure logic
-      // First 2 installments should be PAID (already paid before foreclosure)
-      // Rest should be NOT-PAID (will be handled by foreclosure payment)
       const updatedInstallments = installmentsFromSession.map((installment: any, index: number) => {
         return {
           ...installment,
@@ -41,10 +66,12 @@ export async function onUpdateForeclosureDefaultGenerator(existingPayload: any, 
         };
       });
 
-      // Add updated installments to payments array
-      order.payments.push(...updatedInstallments);
+      rebuiltPayments.push(...updatedInstallments);
       console.log('Merged installments for foreclosure with updated statuses (2 PAID, rest NOT-PAID)');
     }
+
+    // Replace the entire payments array with the correctly ordered one
+    order.payments = rebuiltPayments;
   }
 
   // order.id
@@ -86,6 +113,13 @@ export async function onUpdateForeclosureDefaultGenerator(existingPayload: any, 
     firstPayment.time = firstPayment.time || {};
     firstPayment.time.label = "FORECLOSURE";
     if (firstPayment.time.range) delete firstPayment.time.range;
+
+    // Generate unique ID for this NEW foreclosure payment
+    // Format: foreclosure_<uuid> to identify it as a foreclosure payment
+    if (!firstPayment.id || firstPayment.id === 'PAYMENT_ID_GOLD_LOAN') {
+      firstPayment.id = `foreclosure_${randomUUID()}`;
+      console.log(`Generated unique foreclosure payment ID: ${firstPayment.id}`);
+    }
 
     // Prefer foreclosure amount override from user input
     firstPayment.params = firstPayment.params || {};

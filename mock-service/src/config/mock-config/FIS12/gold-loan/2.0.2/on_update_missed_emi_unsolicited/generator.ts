@@ -9,6 +9,7 @@ export async function onUpdateMissedEmiUnsolicitedDefaultGenerator(existingPaylo
 
     existingPayload.message = existingPayload.message || {};
     const order = existingPayload.message.order || (existingPayload.message.order = {});
+
     function generateUUID() {
         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
             const r = Math.random() * 16 | 0;
@@ -19,26 +20,59 @@ export async function onUpdateMissedEmiUnsolicitedDefaultGenerator(existingPaylo
     if (existingPayload.context) {
         existingPayload.context.message_id = generateUUID();
     }
+
     // If default.yaml doesn't have payments, try carrying forward from session
     if ((!Array.isArray(order.payments) || order.payments.length === 0) && sessionData?.order?.payments?.length) {
         order.payments = sessionData.order.payments;
     }
 
-    // CRITICAL: Merge installments from session data properly
-    // The session should have installments from on_update_missed_emi with one marked as DELAYED
+    // CRITICAL: Merge installments, MISSED_EMI_PAYMENT, AND ON_ORDER payment from session data
+    // IMPORTANT: Maintain the correct payment order from default.yaml
+    // Expected order: MISSED_EMI_PAYMENT, ON_ORDER payment, then installments
     if (sessionData?.order?.payments?.length > 0) {
         const sessionPayments = sessionData.order.payments;
+
+        // Extract installments from session
         const installmentsFromSession = sessionPayments.filter(
             (p: any) => p.type === 'POST_FULFILLMENT' && p.time?.label === 'INSTALLMENT'
         );
 
+        // Extract ON_ORDER payment from session (preserve unique ID from on_confirm)
+        const onOrderFromSession = sessionPayments.find(
+            (p: any) => p.type === 'ON_ORDER'
+        );
+
+        // Extract MISSED_EMI_PAYMENT from session (preserve unique ID from on_update_missed_emi)
+        const missedEmiFromSession = sessionPayments.find(
+            (p: any) => p.type === 'POST_FULFILLMENT' && p.time?.label === 'MISSED_EMI_PAYMENT'
+        );
+
+        // Rebuild payments array in correct order
+        const rebuiltPayments: any[] = [];
+
+        // 1. Add MISSED_EMI_PAYMENT (from session, mark as PAID for unsolicited)
+        if (missedEmiFromSession) {
+            const { url, ...missedEmiWithoutUrl } = missedEmiFromSession;
+            rebuiltPayments.push({
+                ...missedEmiWithoutUrl,
+                status: 'PAID'  // Missed EMI payment is PAID in unsolicited (completed)
+            });
+            console.log('Preserved MISSED_EMI_PAYMENT from session with unique ID, updated status to PAID, and removed url');
+        }
+
+        // 2. Add ON_ORDER payment (from session, with updated status)
+        if (onOrderFromSession) {
+            const updatedOnOrder = {
+                ...onOrderFromSession,
+                status: 'PAID'  // ON_ORDER is always PAID by the time we reach update flows
+            };
+            rebuiltPayments.push(updatedOnOrder);
+            console.log('Preserved ON_ORDER payment from session with unique ID and updated status to PAID');
+        }
+
+        // 3. Add installments (from session, with DELAYED changed to DEFERRED)
         if (installmentsFromSession.length > 0) {
             console.log(`Found ${installmentsFromSession.length} installments from session data for missed EMI unsolicited`);
-
-            // Remove any existing installments from order.payments
-            order.payments = order.payments.filter(
-                (p: any) => !(p.type === 'POST_FULFILLMENT' && p.time?.label === 'INSTALLMENT')
-            );
 
             // Update installment statuses: Find the DELAYED one and change it to DEFERRED
             // Keep all other statuses as-is
@@ -54,10 +88,12 @@ export async function onUpdateMissedEmiUnsolicitedDefaultGenerator(existingPaylo
                 return installment;
             });
 
-            // Add updated installments to payments array
-            order.payments.push(...updatedInstallments);
+            rebuiltPayments.push(...updatedInstallments);
             console.log('Merged installments for missed EMI unsolicited (DELAYED -> DEFERRED)');
         }
+
+        // Replace the entire payments array with the correctly ordered one
+        order.payments = rebuiltPayments;
     }
 
     // order.id

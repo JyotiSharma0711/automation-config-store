@@ -205,7 +205,7 @@ order:
       price:
         value: '139080'
         currency: INR
-    - title: FORCLOSUER_CHARGES
+    - title: FORECLOSUER_CHARGES
       price:
         value: '9536'
         currency: INR

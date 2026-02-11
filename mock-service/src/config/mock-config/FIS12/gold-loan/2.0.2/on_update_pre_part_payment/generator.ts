@@ -15,21 +15,74 @@ export async function onUpdatePrePartPaymentDefaultGenerator(existingPayload: an
     order.payments = sessionData.order.payments;
   }
 
-  // CRITICAL: Merge installments from session data properly
-  // The session should have installments from on_confirm with time ranges
+  // CRITICAL: Merge installments AND ON_ORDER payment from session data
+  // IMPORTANT: Maintain the correct payment order from default.yaml
+  // Expected order: PRE_PART_PAYMENT, ON_ORDER payment, then installments
   if (sessionData?.order?.payments?.length > 0) {
     const sessionPayments = sessionData.order.payments;
+
+    // Extract installments from session
     const installmentsFromSession = sessionPayments.filter(
       (p: any) => p.type === 'POST_FULFILLMENT' && p.time?.label === 'INSTALLMENT'
     );
 
+    // Extract ON_ORDER payment from session (preserve unique ID from on_confirm)
+    const onOrderFromSession = sessionPayments.find(
+      (p: any) => p.type === 'ON_ORDER'
+    );
+
+    // Find the PRE_PART_PAYMENT payment from default.yaml (first payment)
+    const prePartPayment = order.payments.find(
+      (p: any) => p.type === 'POST_FULFILLMENT' &&
+        (p.time?.label === 'PRE_PART_PAYMENT' || !p.time?.label)
+    );
+
+    // Rebuild payments array in correct order
+    const rebuiltPayments: any[] = [];
+
+    // 1. Add PRE_PART_PAYMENT (from default.yaml, but customize it)
+    if (prePartPayment) {
+      prePartPayment.time = prePartPayment.time || {};
+      prePartPayment.time.label = "PRE_PART_PAYMENT";
+      if (prePartPayment.time.range) delete prePartPayment.time.range;
+
+      // Generate unique ID for this NEW pre-part payment
+      // Format: pre_part_<uuid> to identify it as a pre-part payment
+      if (!prePartPayment.id || prePartPayment.id === 'PAYMENT_ID_GOLD_LOAN') {
+        prePartPayment.id = `pre_part_${randomUUID()}`;
+        console.log(`Generated unique pre-part payment ID: ${prePartPayment.id}`);
+      }
+
+      // Prefer amount from flow/user input (config uses pre_part_payment)
+      prePartPayment.params = prePartPayment.params || {};
+      const userAmt = sessionData?.user_inputs?.pre_part_payment ?? sessionData?.user_inputs?.part_payment_amount;
+      if (typeof userAmt === "number") prePartPayment.params.amount = String(userAmt);
+      else if (typeof userAmt === "string" && userAmt.trim()) prePartPayment.params.amount = userAmt.trim();
+
+      // Payment URL generation (FORM_SERVICE)
+      const formService = process.env.FORM_SERVICE;
+      const txId = existingPayload?.context?.transaction_id || sessionData?.transaction_id;
+      if (formService && sessionData?.domain && sessionData?.session_id && sessionData?.flow_id && txId) {
+        prePartPayment.url = `${formService}/forms/${sessionData.domain}/payment_url_form?session_id=${sessionData.session_id}&flow_id=${sessionData.flow_id}&transaction_id=${txId}&direct=true`;
+      }
+
+      rebuiltPayments.push(prePartPayment);
+      console.log('Updated PRE_PART_PAYMENT payment with label, unique ID, and amount');
+    }
+
+    // 2. Add ON_ORDER payment (from session, with updated status)
+    if (onOrderFromSession) {
+      const updatedOnOrder = {
+        ...onOrderFromSession,
+        status: 'PAID'  // ON_ORDER is always PAID by the time we reach update flows
+      };
+      rebuiltPayments.push(updatedOnOrder);
+      console.log('Preserved ON_ORDER payment from session with unique ID and updated status to PAID');
+    }
+
+    // 3. Add installments (from session, with updated statuses)
     if (installmentsFromSession.length > 0) {
       console.log(`Found ${installmentsFromSession.length} installments from session data`);
-
-      // Remove any existing installments from order.payments
-      order.payments = order.payments.filter(
-        (p: any) => !(p.type === 'POST_FULFILLMENT' && p.time?.label === 'INSTALLMENT')
-      );
 
       // Update installment statuses based on pre-part payment logic
       // First 2 installments should be PAID, rest should be NOT-PAID
@@ -40,10 +93,12 @@ export async function onUpdatePrePartPaymentDefaultGenerator(existingPayload: an
         };
       });
 
-      // Add updated installments to payments array
-      order.payments.push(...updatedInstallments);
+      rebuiltPayments.push(...updatedInstallments);
       console.log('Merged installments with updated statuses (2 PAID, rest NOT-PAID)');
     }
+
+    // Replace the entire payments array with the correctly ordered one
+    order.payments = rebuiltPayments;
   }
 
   // order.id
@@ -75,28 +130,6 @@ export async function onUpdatePrePartPaymentDefaultGenerator(existingPayload: an
     if (quoteId) order.quote.id = quoteId;
     else if (!order.quote.id || order.quote.id === "LOAN_LEAD_ID_OR_SIMILAR" || String(order.quote.id).startsWith("LOAN_LEAD_ID")) {
       order.quote.id = `gold_loan_${randomUUID()}`;
-    }
-  }
-
-  // First payment tweaks
-  order.payments = Array.isArray(order.payments) ? order.payments : [];
-  const firstPayment = order.payments[0];
-  if (firstPayment) {
-    firstPayment.time = firstPayment.time || {};
-    firstPayment.time.label = "PRE_PART_PAYMENT";
-    if (firstPayment.time.range) delete firstPayment.time.range;
-
-    // Prefer amount from flow/user input (config uses pre_part_payment)
-    firstPayment.params = firstPayment.params || {};
-    const userAmt = sessionData?.user_inputs?.pre_part_payment ?? sessionData?.user_inputs?.part_payment_amount;
-    if (typeof userAmt === "number") firstPayment.params.amount = String(userAmt);
-    else if (typeof userAmt === "string" && userAmt.trim()) firstPayment.params.amount = userAmt.trim();
-
-    // Payment URL generation (FORM_SERVICE)
-    const formService = process.env.FORM_SERVICE;
-    const txId = existingPayload?.context?.transaction_id || sessionData?.transaction_id;
-    if (formService && sessionData?.domain && sessionData?.session_id && sessionData?.flow_id && txId) {
-      firstPayment.url = `${formService}/forms/${sessionData.domain}/payment_url_form?session_id=${sessionData.session_id}&flow_id=${sessionData.flow_id}&transaction_id=${txId}&direct=true`;
     }
   }
 
