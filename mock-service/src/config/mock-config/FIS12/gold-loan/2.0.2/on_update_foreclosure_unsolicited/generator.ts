@@ -9,38 +9,70 @@ export async function onUpdateForeclosureUnsolicitedDefaultGenerator(existingPay
 
     existingPayload.message = existingPayload.message || {};
     const order = existingPayload.message.order || (existingPayload.message.order = {});
-    
-      function generateUUID() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+
+    function generateUUID() {
+        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
             const r = Math.random() * 16 | 0;
             const v = c == 'x' ? r : (r & 0x3 | 0x8);
             return v.toString(16);
-            });
-        }
-        if (existingPayload.context) {
-            existingPayload.context.message_id = generateUUID();
-        }
+        });
+    }
+    if (existingPayload.context) {
+        existingPayload.context.message_id = generateUUID();
+    }
 
     // If default.yaml doesn't have payments, try carrying forward from session
     if ((!Array.isArray(order.payments) || order.payments.length === 0) && sessionData?.order?.payments?.length) {
         order.payments = sessionData.order.payments;
     }
 
-    // CRITICAL: Merge installments from session data properly
-    // The session should have installments from on_update_foreclosure with updated statuses
+    // CRITICAL: Merge installments AND ON_ORDER payment from session data
+    // IMPORTANT: Maintain the correct payment order from default.yaml
+    // Expected order: FORECLOSURE payment, ON_ORDER payment, then installments
     if (sessionData?.order?.payments?.length > 0) {
         const sessionPayments = sessionData.order.payments;
+
+        // Extract installments from session
         const installmentsFromSession = sessionPayments.filter(
             (p: any) => p.type === 'POST_FULFILLMENT' && p.time?.label === 'INSTALLMENT'
         );
 
+        // Extract ON_ORDER payment from session (preserve unique ID from on_confirm)
+        const onOrderFromSession = sessionPayments.find(
+            (p: any) => p.type === 'ON_ORDER'
+        );
+
+        // Extract FORECLOSURE payment from session (preserve unique ID from on_update_foreclosure)
+        const foreclosureFromSession = sessionPayments.find(
+            (p: any) => p.type === 'POST_FULFILLMENT' && p.time?.label === 'FORECLOSURE'
+        );
+
+        // Rebuild payments array in correct order
+        const rebuiltPayments: any[] = [];
+
+        // 1. Add FORECLOSURE payment (from session, mark as PAID for unsolicited)
+        if (foreclosureFromSession) {
+            const { url, ...foreclosureWithoutUrl } = foreclosureFromSession;
+            rebuiltPayments.push({
+                ...foreclosureWithoutUrl,
+                status: 'PAID'  // Foreclosure payment is PAID in unsolicited (completed)
+            });
+            console.log('Preserved FORECLOSURE payment from session with unique ID, updated status to PAID, and removed url');
+        }
+
+        // 2. Add ON_ORDER payment (from session, with updated status)
+        if (onOrderFromSession) {
+            const updatedOnOrder = {
+                ...onOrderFromSession,
+                status: 'PAID'  // ON_ORDER is always PAID by the time we reach update flows
+            };
+            rebuiltPayments.push(updatedOnOrder);
+            console.log('Preserved ON_ORDER payment from session with unique ID and updated status to PAID');
+        }
+
+        // 3. Add installments (from session, with updated statuses for unsolicited)
         if (installmentsFromSession.length > 0) {
             console.log(`Found ${installmentsFromSession.length} installments from session data for foreclosure unsolicited`);
-
-            // Remove any existing installments from order.payments
-            order.payments = order.payments.filter(
-                (p: any) => !(p.type === 'POST_FULFILLMENT' && p.time?.label === 'INSTALLMENT')
-            );
 
             // Update installment statuses to reflect foreclosure completion
             // First 2: PAID (already paid before foreclosure)
@@ -59,10 +91,12 @@ export async function onUpdateForeclosureUnsolicitedDefaultGenerator(existingPay
                 };
             });
 
-            // Add updated installments to payments array
-            order.payments.push(...updatedInstallments);
+            rebuiltPayments.push(...updatedInstallments);
             console.log('Merged installments for foreclosure unsolicited (2 PAID, all remaining DEFERRED)');
         }
+
+        // Replace the entire payments array with the correctly ordered one
+        order.payments = rebuiltPayments;
     }
 
     // order.id

@@ -1,7 +1,7 @@
 import { randomUUID } from "crypto";
 
 export async function onUpdatePrePartPaymentUnsolicitedDefaultGenerator(existingPayload: any, sessionData: any) {
-  // Standalone PRE_PART_PAYMENT on_update generator
+  // Unsolicited PRE_PART_PAYMENT on_update generator (sent after main pre-part payment on_update)
   existingPayload.context = existingPayload.context || {};
   existingPayload.context.timestamp = new Date().toISOString();
   if (sessionData?.transaction_id) existingPayload.context.transaction_id = sessionData.transaction_id;
@@ -20,26 +20,59 @@ export async function onUpdatePrePartPaymentUnsolicitedDefaultGenerator(existing
   if (existingPayload.context) {
     existingPayload.context.message_id = generateUUID();
   }
+
   // If default.yaml doesn't have payments, try carrying forward from session
   if ((!Array.isArray(order.payments) || order.payments.length === 0) && sessionData?.order?.payments?.length) {
     order.payments = sessionData.order.payments;
   }
 
-  // CRITICAL: Merge installments from session data properly
-  // The session should have installments from on_update_pre_part_payment with updated statuses
+  // CRITICAL: Merge installments, PRE_PART_PAYMENT, AND ON_ORDER payment from session data
+  // IMPORTANT: Maintain the correct payment order from default.yaml
+  // Expected order: PRE_PART_PAYMENT, ON_ORDER payment, then installments
   if (sessionData?.order?.payments?.length > 0) {
     const sessionPayments = sessionData.order.payments;
+
+    // Extract installments from session
     const installmentsFromSession = sessionPayments.filter(
       (p: any) => p.type === 'POST_FULFILLMENT' && p.time?.label === 'INSTALLMENT'
     );
 
-    if (installmentsFromSession.length > 0) {
-      console.log(`Found ${installmentsFromSession.length} installments from session data for unsolicited update`);
+    // Extract ON_ORDER payment from session (preserve unique ID from on_confirm)
+    const onOrderFromSession = sessionPayments.find(
+      (p: any) => p.type === 'ON_ORDER'
+    );
 
-      // Remove any existing installments from order.payments
-      order.payments = order.payments.filter(
-        (p: any) => !(p.type === 'POST_FULFILLMENT' && p.time?.label === 'INSTALLMENT')
-      );
+    // Extract PRE_PART_PAYMENT from session (preserve unique ID from on_update_pre_part_payment)
+    const prePartPaymentFromSession = sessionPayments.find(
+      (p: any) => p.type === 'POST_FULFILLMENT' && p.time?.label === 'PRE_PART_PAYMENT'
+    );
+
+    // Rebuild payments array in correct order
+    const rebuiltPayments: any[] = [];
+
+    // 1. Add PRE_PART_PAYMENT (from session, mark as PAID for unsolicited)
+    if (prePartPaymentFromSession) {
+      const { url, ...prePartWithoutUrl } = prePartPaymentFromSession;
+      rebuiltPayments.push({
+        ...prePartWithoutUrl,
+        status: 'PAID'  // Pre-part payment is PAID in unsolicited (completed)
+      });
+      console.log('Preserved PRE_PART_PAYMENT from session with unique ID, updated status to PAID, and removed url');
+    }
+
+    // 2. Add ON_ORDER payment (from session, with updated status)
+    if (onOrderFromSession) {
+      const updatedOnOrder = {
+        ...onOrderFromSession,
+        status: 'PAID'  // ON_ORDER is always PAID by the time we reach update flows
+      };
+      rebuiltPayments.push(updatedOnOrder);
+      console.log('Preserved ON_ORDER payment from session with unique ID and updated status to PAID');
+    }
+
+    // 3. Add installments (from session, with updated statuses for pre-part payment deferral)
+    if (installmentsFromSession.length > 0) {
+      console.log(`Found ${installmentsFromSession.length} installments from session data for pre-part payment unsolicited`);
 
       // Update installment statuses to reflect pre-part payment deferral scenario
       // First 2: PAID (already paid before pre-part payment)
@@ -61,10 +94,12 @@ export async function onUpdatePrePartPaymentUnsolicitedDefaultGenerator(existing
         };
       });
 
-      // Add updated installments to payments array
-      order.payments.push(...updatedInstallments);
+      rebuiltPayments.push(...updatedInstallments);
       console.log('Merged installments with DEFERRED status for pre-part payment scenario (2 PAID, 2 DEFERRED, rest NOT-PAID)');
     }
+
+    // Replace the entire payments array with the correctly ordered one
+    order.payments = rebuiltPayments;
   }
 
   // order.id
@@ -98,7 +133,6 @@ export async function onUpdatePrePartPaymentUnsolicitedDefaultGenerator(existing
       order.quote.id = `gold_loan_${randomUUID()}`;
     }
   }
-
 
   return existingPayload;
 }
