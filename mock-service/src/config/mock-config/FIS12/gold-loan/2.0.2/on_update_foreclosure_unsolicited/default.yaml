@@ -224,7 +224,7 @@ order:
         email: john.doe@example.com
     state:
       descriptor:
-        code: COMPLETE
+        code: COMPLETED
   payments:
   - id: PAYMENT_ID_GOLD_LOAN
     type: POST_FULFILLMENT
