@@ -42264,6 +42264,7 @@ x-validations:
               - PENDING
               # - REJECTED
               - COMPLETED
+              - COMPLETE
               - CONSENT_REQUIRED
               - APPROVED
             _RETURN_: attr all in enumList
