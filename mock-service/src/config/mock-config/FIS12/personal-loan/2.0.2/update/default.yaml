@@ -1,8 +1,0 @@
-order:
-  id: 66B7AEDF45
-  payments:
-    - type: POST_FULFILLMENT
-      time:
-        label: FORECLOSURE
-      params:
-        amount: "50000"

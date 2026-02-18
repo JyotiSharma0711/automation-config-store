@@ -1,0 +1,129 @@
+order:
+  provider:
+    id: "sellerapp_id"
+    descriptor:
+      name: "ABC Asset Management"
+  items:
+    - id: "12391"
+      parent_item_id: "138"
+      descriptor:
+        name: "ABC Mid Cap Fund - Regular - Growth"
+        code: "SCHEME_PLAN"
+      creator:
+        descriptor:
+          name: "ABC Mutual Fund"
+      fulfillment_ids:
+        - "ff_123"
+      quantity:
+        selected:
+          measure:
+            value: "3000"
+            unit: "INR"
+      tags:
+        - display: true
+          descriptor:
+            name: "Plan Information"
+            code: "PLAN_INFORMATION"
+          list:
+            - descriptor:
+                name: "Consumer Terms & Conditions"
+                code: "CONSUMER_TNC"
+              value: "https://sellerapp.com/legal/ondc:fis14/consumer_tnc.html"
+        - display: true
+          descriptor:
+            name: "Plan Identifiers"
+            code: "PLAN_IDENTIFIERS"
+          list:
+            - descriptor:
+                name: "ISIN"
+                code: "ISIN"
+              value: "IN123214324"
+            - descriptor:
+                name: "RTA Identifier"
+                code: "RTA_IDENTIFIER"
+              value: "02BZ"
+            - descriptor:
+                name: "AMFI Identifier"
+                code: "AMFI_IDENTIFIER"
+              value: "125487"
+        - display: true
+          descriptor:
+            name: "Plan Options"
+            code: "PLAN_OPTIONS"
+          list:
+            - descriptor:
+                name: "Plan"
+                code: "PLAN"
+              value: "REGULAR"
+            - descriptor:
+                name: "Option"
+                code: "OPTION"
+              value: "IDCW"
+            - descriptor:
+                name: "IDCW Option"
+                code: "IDCW_OPTION"
+              value: "PAYOUT"
+        - display: true
+          descriptor:
+            name: "Checklists"
+            code: "CHECKLISTS"
+          list:
+            - descriptor:
+                name: "Application Form"
+                code: "APPLICATION_FORM_WITH_KYC"
+              value: "6547-7456-7235-4386"
+            - descriptor:
+                name: "KYC"
+                code: "KYC"
+              value: "PENDING"
+            - descriptor:
+                name: "ESIGN"
+                code: "ESIGN"
+              value: "PENDING"
+  fulfillments:
+    - id: "ff_123"
+      type: "SIP"
+      customer:
+        person:
+          id: "pan:arrpp7771n"
+      agent:
+        person:
+          id: "euin:E52432"
+        organization:
+          creds:
+            - id: "ARN-124567"
+              type: "ARN"
+      stops:
+        - time:
+            schedule:
+              frequency: "R6/2024-05-15/P1M"
+      tags:
+        - display: true
+          descriptor:
+            name: "Thresholds"
+            code: "THRESHOLDS"  
+          list:
+            - descriptor:
+                name: "Frequency"
+                code: "FREQUENCY"
+              value: "P1M"
+            - descriptor:
+                name: "Amount Minimum"
+                code: "AMOUNT_MIN"
+              value: "5000"
+            - descriptor:
+                name: "Amount Maximum"
+                code: "AMOUNT_MAX"
+              value: "50000"
+            - descriptor:
+                name: "Installments Count Minimum"
+                code: "INSTALMENTS_COUNT_MIN"
+              value: "6"
+            - descriptor:
+                name: "Installments Count Maximum"
+                code: "INSTALMENTS_COUNT_MAX"
+              value: "12"
+            - descriptor:
+                name: "Cumulative Amount Minimum"
+                code: "CUMULATIVE_AMOUNT_MIN"
+              value: "30000"

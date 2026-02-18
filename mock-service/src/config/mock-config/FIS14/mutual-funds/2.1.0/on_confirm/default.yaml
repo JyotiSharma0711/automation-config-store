@@ -1,0 +1,92 @@
+order:
+  id: "o1"
+  provider:
+    id: "sellerapp_id"
+    descriptor:
+      name: "ABC Asset Management"
+  items:
+    - id: "12391"
+      parent_item_id: "138"
+      descriptor:
+        name: "ABC Mid Cap Fund - Regular - Growth"
+        code: "SCHEME_PLAN"
+      fulfillment_ids:
+        - "ff_123"
+      quantity:
+        allocated:
+          measure:
+            value: "0"
+            unit: "NAV_UNITS"
+        selected:
+          measure:
+            value: "3000"
+            unit: "INR"
+  fulfillments:
+    - id: "ff_123"
+      type: "SIP"
+      state:
+        descriptor:
+          name: "SIP Mandate Pending"
+          code: "MANDATE_PENDING"
+      customer:
+        person:
+          id: "pan:arrpp7771n"
+        contact:
+          phone: "+91-9999999999"
+          email: "investor@example.com"
+      stops:
+        - time:
+            schedule:
+              frequency: "R6/2024-05-15/P1M"
+      tags:
+        - descriptor:
+            name: "Account Details"
+            code: "ACCOUNT_DETAILS"
+          list:
+            - descriptor:
+                name: "Folio Number"
+                code: "FOLIO_NUMBER"
+              value: "FN1234567890"
+            - descriptor:
+                name: "Account Type"
+                code: "ACCOUNT_TYPE"
+              value: "NEW"
+  quote:
+    id: "q1"
+    price:
+      currency: "INR"
+      value: "3000"
+    breakup:
+      - item:
+          id: "12391"
+          fulfillment_ids:
+            - "ff_123"
+        title: "SIP Installment"
+        price:
+          currency: "INR"
+          value: "3000"
+  xinput:
+    required: true
+    form:
+      id: "form_payment_mandate"
+      url: "https://forms.sellerapp.com/payment-mandate?k=789xyz"
+      mime_type: "text/html"
+  payments:
+    - type: "PRE_FULFILLMENT"
+      collected_by: "BPP"
+      status: "NOT-PAID"
+      params:
+        currency: "INR"
+        amount: "3000"
+  tags:
+    - display: false
+      descriptor:
+        name: "BPP Terms of Engagement"
+        code: "BPP_TERMS"
+      list:
+        - descriptor:
+            name: "Static Terms (Transaction Level)"
+            code: "STATIC_TERMS"
+          value: "https://sellerapp.com/legal/ondc:fis14/static_terms?v=0.1"
+  created_at: "2023-05-25T05:23:03.443Z"
+  updated_at: "2023-05-25T05:23:03.443Z"

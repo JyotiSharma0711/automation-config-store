@@ -1,0 +1,4 @@
+save-data:
+  message_id: $.context.message_id
+  investor_details_form: "$..form.url"
+  form_id: $.message.order.xinput.form.id

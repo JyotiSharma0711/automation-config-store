@@ -1,0 +1,4 @@
+save-data:
+  order_id: $.message.order.id
+  order_status: $.message.order.status
+  folio_number: $.message.order.fulfillments[0].customer.person.creds[?(@.type=='FOLIO')].id

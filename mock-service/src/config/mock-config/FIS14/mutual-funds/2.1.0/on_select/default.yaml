@@ -1,0 +1,101 @@
+order:
+  provider:
+    id: "sellerapp_id"
+    descriptor:
+      name: "ABC Asset Management"
+  items:
+    - id: "12391"
+      parent_item_id: "138"
+      descriptor:
+        name: "ABC Mid Cap Fund - Regular - Growth"
+        code: "SCHEME_PLAN"
+      creator:
+        descriptor:
+          name: "ABC Mutual Fund"
+      fulfillment_ids:
+        - "ff_123"
+      quantity:
+        selected:
+          measure:
+            value: "3000"
+            unit: "INR"
+      tags:
+        - display: true
+          descriptor:
+            name: "Plan Information"
+            code: "PLAN_INFORMATION"
+          list:
+            - descriptor:
+                name: "Consumer Terms & Conditions"
+                code: "CONSUMER_TNC"
+              value: "https://sellerapp.com/legal/ondc:fis14/consumer_tnc.html"
+  fulfillments:
+    - id: "ff_123"
+      type: "SIP"
+      customer:
+        person:
+          id: "pan:arrpp7771n"
+      agent:
+        person:
+          id: "euin:E52432"
+        organization:
+          creds:
+            - id: "ARN-124567"
+              type: "ARN"
+      stops:
+        - time:
+            schedule:
+              frequency: "R6/2024-05-15/P1M"
+      tags:
+        - display: true
+          descriptor:
+            name: "Thresholds"
+            code: "THRESHOLDS"
+          list:
+            - descriptor:
+                name: "Frequency"
+                code: "FREQUENCY"
+              value: "P1M"
+            - descriptor:
+                name: "Amount Minimum"
+                code: "AMOUNT_MIN"
+              value: "1000"
+            - descriptor:
+                name: "Amount Maximum"
+                code: "AMOUNT_MAX"
+              value: "50000"
+            - descriptor:
+                name: "Installments Count Minimum"
+                code: "INSTALMENTS_COUNT_MIN"
+              value: "6"
+            - descriptor:
+                name: "Installments Count Maximum"
+                code: "INSTALMENTS_COUNT_MAX"
+              value: "12"
+  xinput:
+    required: true
+    head:
+      index:
+        min: 0
+        cur: 0
+        max: 0
+      headings:
+        - "APPLICATION_FORM"
+    form:
+      id: "form_1"
+      url: "https://forms.sellerapp.com/account-opening?k=234sadf234"
+      mime_type: "text/html"
+  tags:
+    - display: false
+      descriptor:
+        name: "BPP Terms of Engagement"
+        code: "BPP_TERMS"
+      list:
+        - descriptor:
+            name: "Static Terms (Transaction Level)"
+            code: "STATIC_TERMS"
+          value: "https://sellerapp.com/legal/ondc:fis14/static_terms?v=0.1"
+        - descriptor:
+            name: "Offline Contract"
+            code: "OFFLINE_CONTRACT"
+          value: "true"
