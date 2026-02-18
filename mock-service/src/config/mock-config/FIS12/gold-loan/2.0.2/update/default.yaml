@@ -1,6 +1,0 @@
-update_target: "payments"
-order:
-  id: "66B7AEDF45"
-  payments:
-    - time:
-        label: "FORECLOSURE" 

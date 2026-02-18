@@ -1,0 +1,171 @@
+catalog:
+  descriptor:
+    name: "ABC Asset Management Company"
+  providers:
+    - id: "sellerapp_id"
+      descriptor:
+        name: "ABC Asset Management"
+      categories:
+        - id: "0"
+          descriptor:
+            name: "Mutual Funds"
+            code: "MUTUAL_FUNDS"
+        - id: "1"
+          descriptor:
+            name: "Open Ended"
+            code: "OPEN_ENDED"
+          parent_category_id: "0"
+        - id: "11"
+          descriptor:
+            name: "Equity"
+            code: "OPEN_ENDED_EQUITY"
+          parent_category_id: "1"
+        - id: "1101"
+          descriptor:
+            name: "Mid Cap Fund"
+            code: "OPEN_ENDED_EQUITY_MIDCAP"
+          parent_category_id: "11"
+      items:
+        - id: "138"
+          descriptor:
+            name: "ABC Mid Cap Fund"
+            code: "SCHEME"
+          category_ids:
+            - "1101"
+          creator:
+            descriptor:
+              name: "ABC Mutual Fund"
+          matched: true
+          tags:
+            - display: true
+              descriptor:
+                name: "Scheme Information"
+                code: "SCHEME_INFORMATION"
+              list:
+                - descriptor:
+                    name: "Status"
+                    code: "STATUS"
+                  value: "active"
+                - descriptor:
+                    name: "Lockin Period (days)"
+                    code: "LOCKIN_PERIOD_IN_DAYS"
+                  value: "365"
+                - descriptor:
+                    name: "Entry Load"
+                    code: "ENTRY_LOAD"
+                  value: "no entry load"
+                - descriptor:
+                    name: "Exit Load"
+                    code: "EXIT_LOAD"
+                  value: "1% on exit"
+        - id: "12391"
+          descriptor:
+            name: "ABC Mid Cap Fund - Regular - Growth"
+            code: "SCHEME_PLAN"
+          creator:
+            descriptor:
+              name: "ABC Mutual Fund"
+          category_ids:
+            - "1101"
+          parent_item_id: "138"
+          fulfillment_ids:
+            - "ff_122"
+            - "ff_123"
+            - "ff_124"
+            - "ff_125"
+          matched: true
+          tags:
+            - display: true
+              descriptor:
+                name: "Plan Information"
+                code: "PLAN_INFORMATION"
+              list:
+                - descriptor:
+                    name: "Consumer Terms & Conditions"
+                    code: "CONSUMER_TNC"
+                  value: "https://sellerapp.com/legal/ondc:fis14/consumer_tnc.html"
+            - display: true
+              descriptor:
+                name: "Plan Identifiers"
+                code: "PLAN_IDENTIFIERS"
+              list:
+                - descriptor:
+                    name: "ISIN"
+                    code: "ISIN"
+                  value: "INF204KA1R86"
+                - descriptor:
+                    name: "RTA Identifier"
+                    code: "RTA_IDENTIFIER"
+                  value: "02BZ"
+                - descriptor:
+                    name: "AMFI Identifier"
+                    code: "AMFI_IDENTIFIER"
+                  value: "125487"
+            - display: true
+              descriptor:
+                name: "Plan Options"
+                code: "PLAN_OPTIONS"
+              list:
+                - descriptor:
+                    name: "Plan"
+                    code: "PLAN"
+                  value: "REGULAR"
+                - descriptor:
+                    name: "Option"
+                    code: "OPTION"
+                  value: "GROWTH"
+                - descriptor:
+                    name: "IDCW Option"
+                    code: "IDCW_OPTION"
+                  value: "PAYOUT"
+            - display: true
+              descriptor:
+                name: "General Information"
+                code: "GENERAL_INFORMATION"
+              list:
+                - descriptor:
+                    name: "Minimum Investment(INR)"
+                    code: "MIN_INVESTMENT"
+                  value: "1000"
+                - descriptor:
+                    name: "Investment Multiple(INR)"
+                    code: "INVESTMENT_MULTIPLE"
+                  value: "1"
+                - descriptor:
+                    name: "Minimum Redemption Quantity"
+                    code: "MIN_REDEMPTION_QUANTITY"
+                  value: "0.001"
+                - descriptor:
+                    name: "Redemption Quantity Multiple"
+                    code: "REDEMPTION_QUANTITY_MULTIPLE"
+                  value: "0.001"
+                - descriptor:
+                    name: "Minimum Redemption Amount"
+                    code: "MIN_REDEMPTION_AMOUNT"
+                  value: "0.01"
+      fulfillments:
+        - id: "ff_122"
+          type: "LUMPSUM"
+        - id: "ff_123"
+          type: "SIP"
+          tags:
+            - descriptor:
+                name: "SIP Details"
+                code: "SIP_DETAILS"
+              list:
+                - descriptor:
+                    name: "Minimum Installment Amount"
+                    code: "MIN_INSTALLMENT_AMOUNT"
+                  value: "1000"
+                - descriptor:
+                    name: "Maximum Installment Amount"
+                    code: "MAX_INSTALLMENT_AMOUNT"
+                  value: "99999999"
+                - descriptor:
+                    name: "Allowed Frequencies"
+                    code: "FREQUENCIES"
+                  value: "DAILY,WEEKLY,MONTHLY,QUARTERLY,HALF_YEARLY,YEARLY"
+        - id: "ff_124"
+          type: "REDEMPTION"
+        - id: "ff_125"
+          type: "SWP"

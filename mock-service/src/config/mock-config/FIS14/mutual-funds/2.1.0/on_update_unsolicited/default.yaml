@@ -1,0 +1,46 @@
+order:
+  id: "o1"
+  provider:
+    id: "sellerapp_id"
+  items:
+    - id: "12391"
+      fulfillment_ids:
+        - "ff_123"
+  fulfillments:
+    - id: "ff_123"
+      type: "SIP"
+      state:
+        descriptor:
+          name: "SIP Active"
+          code: "SIP_ACTIVE"
+      tags:
+        - descriptor:
+            name: "Account Details"
+            code: "ACCOUNT_DETAILS"
+          list:
+            - descriptor:
+                name: "Folio Number"
+                code: "FOLIO_NUMBER"
+              value: "FN1234567890"
+            - descriptor:
+                name: "SIP Registration Number"
+                code: "SIP_REGISTRATION_NUMBER"
+              value: "SIP987654321"
+  payments:
+    - type: "PRE_FULFILLMENT"
+      collected_by: "BPP"
+      status: "PAID"
+      params:
+        currency: "INR"
+        amount: "3000"
+      tags:
+        - descriptor:
+            name: "Payment Method"
+            code: "PAYMENT_METHOD"
+          list:
+            - descriptor:
+                code: "MODE"
+              value: "NACH"
+            - descriptor:
+                code: "MANDATE_IDENTIFIER"
+              value: "M125487"

@@ -1,7 +1,0 @@
-update_target: "fulfillment"
-order:
-  id: "66B7AEDF45"
-  fulfillments:
-    - state:
-        descriptor:
-          code: "APPROVED"

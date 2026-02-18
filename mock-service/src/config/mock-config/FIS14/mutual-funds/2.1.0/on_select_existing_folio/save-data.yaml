@@ -1,0 +1,6 @@
+save-data:
+  selected_provider: $.message.order.provider
+  provider_id: $.message.order.provider.id
+  selected_item_id: $.message.order.items[0].id
+  item: $.message.order.items[0]
+  fulfillment_ids: $.message.order.items[0].fulfillment_ids

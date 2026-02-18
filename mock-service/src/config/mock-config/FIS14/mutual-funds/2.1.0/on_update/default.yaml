@@ -1,0 +1,117 @@
+order:
+  id: "mfpp_213adf123af"
+  status: "ACCEPTED"
+  provider:
+    id: "sellerapp_id"
+    descriptor:
+      name: "ABC Asset Management"
+  items:
+    - id: "12391"
+      parent_item_id: "138"
+      descriptor:
+        name: "ABC Mid Cap Fund - Regular - Growth"
+        code: "SCHEME_PLAN"
+      creator:
+        descriptor:
+          name: "ABC Mutual Fund"
+      quantity:
+        selected:
+          measure:
+            value: "3000"
+            unit: "INR"
+      fulfillment_ids:
+        - "ff_123"
+      payment_ids:
+        - "pmt_123"
+      tags:
+        - display: true
+          descriptor:
+            name: "Plan Information"
+            code: "PLAN_INFORMATION"
+          list:
+            - descriptor:
+                name: "Consumer Terms & Conditions"
+                code: "CONSUMER_TNC"
+              value: "https://sellerapp.com/legal/ondc:fis14/consumer_tnc.html"
+        - display: true
+          descriptor:
+            name: "Plan Identifiers"
+            code: "PLAN_IDENTIFIERS"
+          list:
+            - descriptor:
+                name: "ISIN"
+                code: "ISIN"
+              value: "IN123214324"
+            - descriptor:
+                name: "RTA Identifier"
+                code: "RTA_IDENTIFIER"
+              value: "02BZ"
+            - descriptor:
+                name: "AMFI Identifier"
+                code: "AMFI_IDENTIFIER"
+              value: "125487"
+        - display: true
+          descriptor:
+            name: "Plan Options"
+            code: "PLAN_OPTIONS"
+          list:
+            - descriptor:
+                name: "Plan"
+                code: "PLAN"
+              value: "REGULAR"
+            - descriptor:
+                name: "Option"
+                code: "OPTION"
+              value: "IDCW"
+            - descriptor:
+                name: "IDCW Option"
+                code: "IDCW_OPTION"
+              value: "PAYOUT"
+  fulfillments:
+    - id: "ff_123"
+      type: "SIP"
+      state:
+        descriptor:
+          code: "INITIATED" 
+          name: "SIP Initiated"
+      customer:
+        person:
+          id: "pan:arrpp7771n"
+          creds:
+            - id: "78953432/32"
+              type: "FOLIO"
+      stops:
+        - id: "stop_1"
+          authorization:
+            type: "OTP"
+            status: "SUCCESS"
+          time:
+            schedule:
+              frequency: "R6/2024-05-15/P1M"
+      agent:
+        person:
+          id: "euin:E52432"
+        organization:
+          creds:
+            - id: "ARN-124567"
+              type: "ARN"
+  payments:
+    - id: "pmt_123"
+      collected_by: "BPP"
+      params:
+        amount: "0"
+        currency: "INR"
+      type: "PRE_FULFILLMENT"
+      status: "PAID"
+      tags:
+        - descriptor:
+            name: "Payment Method"
+            code: "PAYMENT_METHOD"
+          list:
+            - descriptor:
+                code: "MODE"
+              value: "SKIP_PAYMENT"
+  quote:
+    price:
+      currency: "INR"
+      value: "0"

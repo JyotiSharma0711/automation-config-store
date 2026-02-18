@@ -1,0 +1,24 @@
+session_data:
+  transaction_id: null
+  message_id: null
+  last_action: null
+  mock_type: null
+  city_code: null
+  bap_id: null
+  bap_uri: null
+  bpp_id: null
+  bpp_uri: null
+  provider_id: null
+  selected_scheme_id: null
+  selected_item_id: null
+  investment_amount: null
+  sip_frequency: null
+  folio_number: null
+  kyc_status: null
+  investor_details_form: null
+  payment_mandate_form: null
+  pan_number: null
+  euin: null
+  arn: null
+  order_id: null
+  payment_status: null

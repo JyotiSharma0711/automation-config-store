@@ -1,8 +1,0 @@
-save-data:
-  transaction_id: "$.context.transaction_id"
-  message_id: "$.context.message_id"
-  kyc_verification_status: "$..form.url"
-  items: "$.message.order.providers[*].items[*]"
-  provider_id: "$.message.order.providers[0].id"
-  item: "$.message.order.providers[0].items[0]"
-  consent_handler: "$.message.order.items[0].tags[0].list[0].value"

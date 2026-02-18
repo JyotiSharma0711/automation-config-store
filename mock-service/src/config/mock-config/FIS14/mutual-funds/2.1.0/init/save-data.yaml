@@ -1,0 +1,5 @@
+save-data:
+  message_id: $.context.message_id
+  transaction_id: $.context.transaction_id
+  payment_collected_by: $.message.order.payments[0].collected_by
+  folio_number: $.message.order.fulfillments[0].customer.person.creds[?(@.type=='FOLIO')].id
